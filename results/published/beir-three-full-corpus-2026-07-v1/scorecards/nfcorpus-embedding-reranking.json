@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.1",
+  "bundle_id": "beir-three-full-corpus-2026-07",
+  "status": "complete",
+  "dataset": "nfcorpus",
+  "split": "test",
+  "source_profile_identity": "no_llm",
+  "public_display_label": "Embedding + Reranking",
+  "runner_profile": "bge_m3_rerank_baseline_v2",
+  "counts": {
+    "corpus_docs": 3633,
+    "official_test_queries": 323,
+    "qrels_rows": 12334,
+    "evaluated_queries": 323,
+    "query_failures": 0
+  },
+  "metrics": {
+    "recall_at_10": 0.1481659822924788,
+    "recall_at_50": 0.2360874647660738,
+    "ndcg_at_10": 0.29823358400134947,
+    "ndcg_at_50": 0.26590052377340756
+  },
+  "latency_ms": {
+    "p50": 5904.860682000162,
+    "p95": 6963.527067099949,
+    "count": 323,
+    "definition": "one cold end-to-end HTTP query per official test-qrels query; runner linear-interpolation percentile",
+    "comparison_scope": "within_dataset_paired_hardware_only"
+  },
+  "validity": {
+    "scientific": {
+      "status": "VALID",
+      "reason": "The complete corpus and every official test query were evaluated with zero query failures."
+    },
+    "strict_feature_completeness": {
+      "status": "PASS",
+      "reason": "The retained baseline strict proof contains no required LLM-feature debt because those stages are disabled by profile contract."
+    }
+  },
+  "hardware": {
+    "provider": "AWS",
+    "instance_type": "g5.2xlarge",
+    "accelerator": "NVIDIA A10G",
+    "embedding_execution_provider": "cuda",
+    "reranker_execution_provider": "cuda",
+    "pairing_scope": "nfcorpus_only"
+  },
+  "source_locks": {
+    "cortrix_core_sha": "4a6299ca86c7bec21ed7b8989a729a198fe5a42a",
+    "measurement_runner_sha": "6defa0a50d696a7e4049413522fc0daca68f882e",
+    "maintainer_orchestration_sha": "04a3eb676582c74e0752d6aecdc51e7c8f1b0c26",
+    "status_contract_sha": "ba725c892ece3d0ce4e315c2d0155d82031f6d77"
+  },
+  "checksums": {
+    "dataset_archive_sha256": "efe5be03f8c5b86a5870102d0599d227c8c6e2484328e68c6522560385671b0b",
+    "source_scorecard_sha256": "6077445983397096440b4a8bd61f029abaa34f5c2ba45c57416472867ca85a7c",
+    "runner_profiles_source_sha256": "2dd762cbd22a57388c25ed16fee1c44eed6edf724aef6a55583f1eb1b6203aaf",
+    "source_profile_record_sha256": "97830a9d84b365b27f2e5d2f1783f66014f4054892e613e05c9a817c64ca9dec",
+    "redacted_server_config_sha256": "67d827b8f4cd8955e6fc8c9a8a5af7d136b3c627bf276abb39cb180ccad77d62"
+  },
+  "protocol": {
+    "seed": 44044,
+    "retrieval_depth": 250,
+    "metric_cutoffs": [10, 50],
+    "namespace_isolation": "isolated_nfcorpus_embedding_reranking",
+    "task_drain": "all submitted tasks terminal before measurement",
+    "freeze": "no database writes during the measured query pass",
+    "source_document_id_mapping": "metadata BEIR corpus ID plus read-only child-to-source alias mapping and document-level deduplication"
+  },
+  "provenance": {
+    "run_id": "nfcorpus-no-llm-20260714T122305Z",
+    "measured_window": "2026-07-14",
+    "scope_boundary": "retrieval_quality_only"
+  }
+}

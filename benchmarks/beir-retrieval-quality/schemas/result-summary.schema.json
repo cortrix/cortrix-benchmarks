@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cortrix Benchmark Result Summary",
+  "type": "object",
+  "required": ["run_id", "results"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "results": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

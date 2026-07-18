@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cortrix.ai/schemas/beir-release-candidate-scorecard.schema.json",
+  "title": "Cortrix BEIR release-candidate scorecard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "status",
+    "dataset",
+    "split",
+    "source_profile_identity",
+    "public_display_label",
+    "runner_profile",
+    "counts",
+    "metrics",
+    "latency_ms",
+    "validity",
+    "hardware",
+    "source_locks",
+    "checksums",
+    "protocol",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.1"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "status": {"const": "complete"},
+    "dataset": {"enum": ["scifact", "fiqa", "nfcorpus"]},
+    "split": {"const": "test"},
+    "source_profile_identity": {"enum": ["full_llm", "no_llm"]},
+    "public_display_label": {"enum": ["Full Stack", "Embedding + Reranking"]},
+    "runner_profile": {"enum": ["bge_m3_rf_pool_listwise", "bge_m3_rerank_baseline_v2"]},
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["corpus_docs", "official_test_queries", "qrels_rows", "evaluated_queries", "query_failures"],
+      "properties": {
+        "corpus_docs": {"type": "integer", "minimum": 1},
+        "official_test_queries": {"type": "integer", "minimum": 1},
+        "qrels_rows": {"type": "integer", "minimum": 1},
+        "evaluated_queries": {"type": "integer", "minimum": 1},
+        "query_failures": {"const": 0}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recall_at_10", "recall_at_50", "ndcg_at_10", "ndcg_at_50"],
+      "properties": {
+        "recall_at_10": {"type": "number", "minimum": 0, "maximum": 1},
+        "recall_at_50": {"type": "number", "minimum": 0, "maximum": 1},
+        "ndcg_at_10": {"type": "number", "minimum": 0, "maximum": 1},
+        "ndcg_at_50": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "latency_ms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p50", "p95", "count", "definition", "comparison_scope"],
+      "properties": {
+        "p50": {"type": "number", "minimum": 0},
+        "p95": {"type": "number", "minimum": 0},
+        "count": {"type": "integer", "minimum": 1},
+        "definition": {"type": "string", "minLength": 1},
+        "comparison_scope": {"const": "within_dataset_paired_hardware_only"}
+      }
+    },
+    "validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scientific", "strict_feature_completeness"],
+      "properties": {
+        "scientific": {"$ref": "#/$defs/statusReasonScientific"},
+        "strict_feature_completeness": {"$ref": "#/$defs/statusReasonStrict"}
+      }
+    },
+    "hardware": {"type": "object", "minProperties": 4},
+    "source_locks": {"type": "object", "minProperties": 4},
+    "checksums": {"type": "object", "minProperties": 5},
+    "protocol": {"type": "object", "minProperties": 7},
+    "provenance": {"type": "object", "minProperties": 3}
+  },
+  "$defs": {
+    "statusReasonScientific": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"enum": ["VALID", "INVALID", "NOT_EVALUATED"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "statusReasonStrict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL", "NOT_EVALUATED"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

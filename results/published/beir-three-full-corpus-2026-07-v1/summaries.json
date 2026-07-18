@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.1",
+  "bundle_id": "beir-three-full-corpus-2026-07",
+  "status": "complete",
+  "public_label": "Full-corpus retrieval measurements",
+  "profile_display_mapping": {
+    "full_llm": "Full Stack",
+    "no_llm": "Embedding + Reranking"
+  },
+  "dataset_summaries": [
+    {
+      "dataset": "scifact",
+      "corpus_docs": 5183,
+      "official_test_queries": 300,
+      "profiles": {
+        "full_llm": {
+          "recall_at_10": 0.8697777777777778,
+          "recall_at_50": 0.9303333333333335,
+          "ndcg_at_10": 0.7715628585309029,
+          "ndcg_at_50": 0.7859678770592412
+        },
+        "no_llm": {
+          "recall_at_10": 0.7794444444444444,
+          "recall_at_50": 0.9193333333333333,
+          "ndcg_at_10": 0.6009192031295701,
+          "ndcg_at_50": 0.6345248462308591
+        }
+      }
+    },
+    {
+      "dataset": "fiqa",
+      "corpus_docs": 57638,
+      "official_test_queries": 648,
+      "profiles": {
+        "full_llm": {
+          "recall_at_10": 0.5204965730428691,
+          "recall_at_50": 0.6640487127755649,
+          "ndcg_at_10": 0.46629212707101036,
+          "ndcg_at_50": 0.5061861036723014
+        },
+        "no_llm": {
+          "recall_at_10": 0.3635011336400227,
+          "recall_at_50": 0.6342567454835977,
+          "ndcg_at_10": 0.2525741428783595,
+          "ndcg_at_50": 0.3323594258364845
+        }
+      }
+    },
+    {
+      "dataset": "nfcorpus",
+      "corpus_docs": 3633,
+      "official_test_queries": 323,
+      "profiles": {
+        "full_llm": {
+          "recall_at_10": 0.1717175200952775,
+          "recall_at_50": 0.2544556184064304,
+          "ndcg_at_10": 0.372061225020649,
+          "ndcg_at_50": 0.3175197600622023
+        },
+        "no_llm": {
+          "recall_at_10": 0.1481659822924788,
+          "recall_at_50": 0.2360874647660738,
+          "ndcg_at_10": 0.29823358400134947,
+          "ndcg_at_50": 0.26590052377340756
+        }
+      }
+    }
+  ],
+  "macro_average": {
+    "method": "unweighted mean across SciFact, FiQA, and NFCorpus",
+    "profiles": {
+      "full_llm": {
+        "recall_at_10": 0.5206639569719748,
+        "recall_at_50": 0.6162792215051096,
+        "ndcg_at_10": 0.5366387368741874,
+        "ndcg_at_50": 0.5365579135979149,
+        "display_recall_at_10": "0.5207",
+        "display_ndcg_at_10": "0.5366"
+      },
+      "no_llm": {
+        "recall_at_10": 0.43037052012564864,
+        "recall_at_50": 0.5965591811943349,
+        "ndcg_at_10": 0.3839089766697597,
+        "ndcg_at_50": 0.4109282652802504,
+        "display_recall_at_10": "0.4304",
+        "display_ndcg_at_10": "0.3839"
+      }
+    }
+  },
+  "hero_claims": [
+    {
+      "metric": "ndcg_at_10",
+      "dataset": "fiqa",
+      "full_stack": 0.46629212707101036,
+      "embedding_reranking": 0.2525741428783595,
+      "formula": "(full_stack / embedding_reranking - 1) * 100",
+      "exact_relative_improvement_percent": 84.61593960375356,
+      "display": "Up to 84.6% higher NDCG@10",
+      "qualifier": "Full Stack vs Embedding + Reranking on FiQA."
+    },
+    {
+      "metric": "recall_at_10",
+      "dataset": "fiqa",
+      "full_stack": 0.5204965730428691,
+      "embedding_reranking": 0.3635011336400227,
+      "formula": "(full_stack / embedding_reranking - 1) * 100",
+      "exact_relative_improvement_percent": 43.189807368887045,
+      "display": "Up to 43.2% higher Recall@10",
+      "qualifier": "Full Stack vs Embedding + Reranking on FiQA."
+    }
+  ],
+  "paired_latency": {
+    "comparison_scope": "within_dataset_paired_hardware_only",
+    "scifact": {
+      "hardware": "AWS g5.2xlarge with NVIDIA A10G",
+      "full_stack_p50_ms": 34232.35773449778,
+      "full_stack_p95_ms": 39544.659186449644,
+      "embedding_reranking_p50_ms": 7310.592896000344,
+      "embedding_reranking_p95_ms": 8766.053063300184
+    },
+    "fiqa": {
+      "hardware": "AWS c7i.8xlarge CPU",
+      "full_stack_p50_ms": 106172.47638299887,
+      "full_stack_p95_ms": 135121.1999856998,
+      "embedding_reranking_p50_ms": 26520.88781350085,
+      "embedding_reranking_p95_ms": 33302.56768604977
+    },
+    "nfcorpus": {
+      "hardware": "AWS g5.2xlarge with NVIDIA A10G",
+      "full_stack_p50_ms": 29503.740341002413,
+      "full_stack_p95_ms": 32229.120364094706,
+      "embedding_reranking_p50_ms": 5904.860682000162,
+      "embedding_reranking_p95_ms": 6963.527067099949
+    }
+  },
+  "scope_boundary": "Retrieval quality only. The data does not establish end-to-end answer quality, broad platform support, or business outcomes."
+}
