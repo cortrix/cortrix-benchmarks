@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cortrix.ai/schemas/beir-terminal-status.schema.json",
+  "title": "BEIR benchmark terminal status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "source_summary_format",
+    "scientific_result",
+    "strict_feature_completeness",
+    "lane_classification",
+    "wrapper_process"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_summary_format": {
+      "const": "result-summary-v1"
+    },
+    "scientific_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "total_cells",
+        "completed_cells",
+        "imported_documents",
+        "evaluated_queries",
+        "query_failures",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["VALID", "INVALID", "NOT_EVALUATED"]
+        },
+        "total_cells": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed_cells": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "imported_documents": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "evaluated_queries": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "query_failures": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "strict_feature_completeness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "pending_retry",
+        "failed_permanent",
+        "orphan_sources",
+        "other_mismatches",
+        "total_debt",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["PASS", "FAIL", "NOT_EVALUATED"]
+        },
+        "pending_retry": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_permanent": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "orphan_sources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "other_mismatches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_debt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "lane_classification": {
+      "enum": [
+        "SCIENTIFIC_COMPLETE",
+        "SCIENTIFIC_COMPLETE_WITH_FEATURE_DEBT",
+        "SCIENTIFIC_COMPLETE_FEATURE_STATUS_UNKNOWN",
+        "SCIENTIFIC_INVALID",
+        "SCIENTIFIC_STATUS_UNKNOWN"
+      ]
+    },
+    "wrapper_process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["return_code", "preserved"],
+      "properties": {
+        "return_code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "preserved": {
+          "const": true
+        }
+      }
+    }
+  }
+}

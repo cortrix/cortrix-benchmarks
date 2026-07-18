@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.1",
+  "status": "complete",
+  "measurement_scope": "full_corpus",
+  "source_profile_identity": "full_llm",
+  "public_display_label": "Full Stack",
+  "runner_profile": "bge_m3_rf_pool_listwise",
+  "query_fraction": 1.0,
+  "query_body": {
+    "rerank": true,
+    "rag_fusion": true,
+    "route": "complex",
+    "explain": true,
+    "llm_rerank": true,
+    "llm_rerank_config": {
+      "top_n": 30,
+      "max_doc_chars": 1500
+    },
+    "rag_fusion_config": {
+      "fusion_variant_weight": 0.2,
+      "fusion_anchor_max": 10,
+      "candidate_multiplier": 2,
+      "max_candidates": 200
+    }
+  },
+  "server_contract": {
+    "embedding_model": "BAAI/bge-m3",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "llm_provider": "DeepSeek",
+    "llm_model": "deepseek-v4-flash",
+    "llm_roles": ["semantic_llm", "doc_summary_llm", "enricher_llm"],
+    "measured_features": [
+      "contextual retrieval",
+      "HyPE",
+      "document summaries",
+      "RAG Fusion",
+      "listwise reranking"
+    ]
+  },
+  "source_definition": {
+    "measurement_runner_sha": "6defa0a50d696a7e4049413522fc0daca68f882e",
+    "runner_profiles_source_sha256": "2dd762cbd22a57388c25ed16fee1c44eed6edf724aef6a55583f1eb1b6203aaf"
+  },
+  "scope_boundary": "The profile measures the listed retrieval stages only; it does not establish end-to-end answer quality or business outcomes."
+}

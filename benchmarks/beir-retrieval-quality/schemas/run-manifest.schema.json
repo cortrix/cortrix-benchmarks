@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cortrix Benchmark Run Manifest",
+  "type": "object",
+  "required": ["run_id", "created_at", "datasets", "profiles", "top_k"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "datasets": {"type": "array", "items": {"type": "string"}},
+    "profiles": {"type": "array", "items": {"type": "string"}},
+    "top_k": {"type": "integer"}
+  },
+  "additionalProperties": true
+}

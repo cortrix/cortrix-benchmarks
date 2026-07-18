@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cortrix.ai/schemas/beir-release-candidate-bundle.schema.json",
+  "title": "Cortrix BEIR three-dataset release-candidate bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "status",
+    "public_label",
+    "created_at",
+    "updated_at",
+    "scope",
+    "profile_display_mapping",
+    "datasets",
+    "source_locks",
+    "protocol",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.1"},
+    "bundle_id": {"const": "beir-three-full-corpus-2026-07"},
+    "status": {"const": "complete"},
+    "public_label": {"const": "Full-corpus retrieval measurements"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "scope": {"const": "retrieval_quality_only"},
+    "profile_display_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["full_llm", "no_llm"],
+      "properties": {
+        "full_llm": {"const": "Full Stack"},
+        "no_llm": {"const": "Embedding + Reranking"}
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["dataset", "split", "corpus_docs", "official_test_queries", "qrels_rows", "dataset_archive_sha256", "scorecards"]
+      }
+    },
+    "source_locks": {"type": "object", "minProperties": 4},
+    "protocol": {"type": "object", "minProperties": 7},
+    "artifacts": {"type": "object", "minProperties": 7}
+  }
+}

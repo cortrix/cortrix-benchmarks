@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.1",
+  "bundle_id": "beir-three-full-corpus-2026-07",
+  "status": "complete",
+  "public_label": "Full-corpus retrieval measurements",
+  "created_at": "2026-07-17T14:21:04+08:00",
+  "updated_at": "2026-07-17T14:21:04+08:00",
+  "scope": "retrieval_quality_only",
+  "profile_display_mapping": {
+    "full_llm": "Full Stack",
+    "no_llm": "Embedding + Reranking"
+  },
+  "datasets": [
+    {
+      "dataset": "scifact",
+      "split": "test",
+      "corpus_docs": 5183,
+      "official_test_queries": 300,
+      "qrels_rows": 339,
+      "dataset_archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+      "scorecards": [
+        "scorecards/scifact-full-stack.json",
+        "scorecards/scifact-embedding-reranking.json"
+      ]
+    },
+    {
+      "dataset": "fiqa",
+      "split": "test",
+      "corpus_docs": 57638,
+      "official_test_queries": 648,
+      "qrels_rows": 1706,
+      "dataset_archive_sha256": "32c7df99ed21252fdfb2cf3f5673502a8d245ee0c44c4a133570d92ce2b3ad02",
+      "scorecards": [
+        "scorecards/fiqa-full-stack.json",
+        "scorecards/fiqa-embedding-reranking.json"
+      ]
+    },
+    {
+      "dataset": "nfcorpus",
+      "split": "test",
+      "corpus_docs": 3633,
+      "official_test_queries": 323,
+      "qrels_rows": 12334,
+      "dataset_archive_sha256": "efe5be03f8c5b86a5870102d0599d227c8c6e2484328e68c6522560385671b0b",
+      "scorecards": [
+        "scorecards/nfcorpus-full-stack.json",
+        "scorecards/nfcorpus-embedding-reranking.json"
+      ]
+    }
+  ],
+  "source_locks": {
+    "cortrix_core_sha": "4a6299ca86c7bec21ed7b8989a729a198fe5a42a",
+    "measurement_runner_sha": "6defa0a50d696a7e4049413522fc0daca68f882e",
+    "status_contract_sha": "ba725c892ece3d0ce4e315c2d0155d82031f6d77",
+    "maintainer_orchestration_sha_by_dataset": {
+      "scifact": "04a3eb676582c74e0752d6aecdc51e7c8f1b0c26",
+      "fiqa": "3e94f768fed8896ef8aa087b8a1f6281241aed5e",
+      "nfcorpus": "04a3eb676582c74e0752d6aecdc51e7c8f1b0c26"
+    }
+  },
+  "protocol": {
+    "seed": 44044,
+    "retrieval_depth": 250,
+    "metric_cutoffs": [10, 50],
+    "namespace_isolation": "one isolated namespace and database state per dataset/profile cell",
+    "task_drain": "all submitted tasks terminal; Full Stack also requires the document-summary drain before measurement",
+    "freeze": "after task drain, prevent corpus or enrichment writes until the measured query pass is complete",
+    "query_execution": "one cold end-to-end request for each official test-qrels query",
+    "source_document_id_mapping": "BEIR corpus IDs are stored in document metadata, child IDs are resolved read-only to source documents, and duplicate chunks collapse to the first document rank"
+  },
+  "artifacts": {
+    "human_readme": "README.md",
+    "reproduction": "reproduction.md",
+    "bundle_schema": "benchmarks/beir-retrieval-quality/schemas/release-candidate-bundle.schema.json",
+    "scorecard_schema": "benchmarks/beir-retrieval-quality/schemas/release-candidate-scorecard.schema.json",
+    "profiles": [
+      "profiles/full-stack.json",
+      "profiles/embedding-reranking.json"
+    ],
+    "scorecards": [
+      "scorecards/scifact-full-stack.json",
+      "scorecards/scifact-embedding-reranking.json",
+      "scorecards/fiqa-full-stack.json",
+      "scorecards/fiqa-embedding-reranking.json",
+      "scorecards/nfcorpus-full-stack.json",
+      "scorecards/nfcorpus-embedding-reranking.json"
+    ],
+    "summary": "summaries.json",
+    "checksums": "checksums.sha256"
+  }
+}

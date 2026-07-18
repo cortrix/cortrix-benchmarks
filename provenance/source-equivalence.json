@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "status": "source_equivalence_declared",
+  "full_benchmark_rerun_executed": false,
+  "measurement_identity": {
+    "bundle_id": "beir-three-full-corpus-2026-07",
+    "cortrix_core_sha": "4a6299ca86c7bec21ed7b8989a729a198fe5a42a",
+    "measurement_runner_sha": "6defa0a50d696a7e4049413522fc0daca68f882e",
+    "status_contract_sha": "ba725c892ece3d0ce4e315c2d0155d82031f6d77",
+    "orchestration_anchor_by_dataset": {
+      "scifact": "04a3eb676582c74e0752d6aecdc51e7c8f1b0c26",
+      "fiqa": "3e94f768fed8896ef8aa087b8a1f6281241aed5e",
+      "nfcorpus": "04a3eb676582c74e0752d6aecdc51e7c8f1b0c26"
+    },
+    "dataset_archive_sha256": {
+      "scifact": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+      "fiqa": "32c7df99ed21252fdfb2cf3f5673502a8d245ee0c44c4a133570d92ce2b3ad02",
+      "nfcorpus": "efe5be03f8c5b86a5870102d0599d227c8c6e2484328e68c6522560385671b0b"
+    }
+  },
+  "public_snapshot_paths": {
+    "runner": "benchmarks/beir-retrieval-quality/runner",
+    "status_schema": "benchmarks/beir-retrieval-quality/schemas/terminal-status.schema.json",
+    "methodology": "benchmarks/beir-retrieval-quality/docs/methodology.md",
+    "local_reproduction": "benchmarks/beir-retrieval-quality/docs/local-reproduction.md",
+    "result_reproduction": "results/published/beir-three-full-corpus-2026-07-v1/reproduction.md",
+    "published_bundle": "results/published/beir-three-full-corpus-2026-07-v1",
+    "cortrix_core_public_url": null
+  },
+  "content_equivalence": {
+    "measurement_runner_tree": {
+      "source_ref": "6defa0a50d696a7e4049413522fc0daca68f882e",
+      "git_tree": "c54825a3b6ea2202ac84d4b392b8be4cd1a41fb4"
+    },
+    "status_contract_runner_source_tree": {
+      "source_ref": "ba725c892ece3d0ce4e315c2d0155d82031f6d77",
+      "git_tree": "4c19d0c2901787e2dd2cd112cd191f9d2b76842e"
+    },
+    "unchanged_measurement_files": [
+      {
+        "path": "benchmarks/beir-retrieval-quality/runner/run_benchmark.py",
+        "git_blob": "ac7e5495721246299aa4ac3fa48bdbfd249b8670",
+        "sha256": "030ad59186003b6efb0ce24594f76652d82a82ccfcfe748bf6ee75a67c8d7b46"
+      },
+      {
+        "path": "benchmarks/beir-retrieval-quality/runner/beir_loader.py",
+        "git_blob": "4e7507e47a8ca02fe66a84e9aa3a9a688f16fe55",
+        "sha256": "899b34212d6e1796c7bc8dd0e856ffb256775fc2c1e285ff0225c4d474d77a94"
+      },
+      {
+        "path": "benchmarks/beir-retrieval-quality/runner/sample_plan.py",
+        "git_blob": "d2d1e9b3188da34f58f2b5c80952122599dcecee",
+        "sha256": "a4e3bee96c756cf8801270b9e7e4dda95072d61eef38311d2b75c16867fc1e3c"
+      }
+    ],
+    "public_profile_overlay": {
+      "path": "benchmarks/beir-retrieval-quality/runner/profiles.py",
+      "source_profile_blob": "253fc8f557832849fba7a1bd7563587aed411874",
+      "source_profile_sha256": "2dd762cbd22a57388c25ed16fee1c44eed6edf724aef6a55583f1eb1b6203aaf",
+      "public_profile_blob": "c2c6b876f6b3f9e5a66c281e522365769b66723a",
+      "public_profile_sha256": "e86f6fab488a70183b1b8540cee548fdcf3033b640d9a57e7e26c336ef79c012",
+      "equivalence_scope": [
+        "bge_m3_rerank_baseline_v2 executable query fields",
+        "bge_m3_rf_pool_listwise executable query fields"
+      ],
+      "verification": "benchmarks/beir-retrieval-quality/tests/test_public_profile_contract.py"
+    },
+    "status_contract_files": [
+      {
+        "path": "benchmarks/beir-retrieval-quality/runner/terminal_status.py",
+        "git_blob": "909172d1677aaa4dd0daff7f03c80685a32701cc",
+        "sha256": "3e9e5753e14ced24327b43e802b14817e240955ccba219a5c3f80739d399b00f"
+      },
+      {
+        "path": "benchmarks/beir-retrieval-quality/schemas/terminal-status.schema.json",
+        "git_blob": "ff18651d747a7e655b0d8a49a365dc55a74f09ea",
+        "sha256": "ee16394ee0b7195dd4aa11518a163f6e3937645be1b220ac4592032a3efa7490"
+      }
+    ],
+    "published_bundle": {
+      "manifest_sha256": "bd570b504803060d48327634d337fc71b0a8730d974ed3e52ea736a6dcd1811e",
+      "checksum_inventory_sha256": "5882100251245422aad73378db03605d2e137b368fc78a6baf3302a71be53abf"
+    }
+  },
+  "orchestration_anchor_semantics": {
+    "type": "internal_repo_state_anchor",
+    "publicly_resolvable": false,
+    "history_replicated": false,
+    "role": "measurement identity only"
+  },
+  "limitations": [
+    "The orchestration anchors do not provide public reconstruction of the original operational history.",
+    "The public profiles source omits non-measurement diagnostic narrative; executable fields for the two published profiles are verified against the bundle contracts.",
+    "The exact Cortrix source lock is not anonymously accessible until a separate public source release is completed.",
+    "Capped validation is not comparable to the published full-corpus measurements."
+  ]
+}

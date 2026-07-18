@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.1",
+  "status": "complete",
+  "measurement_scope": "full_corpus",
+  "source_profile_identity": "no_llm",
+  "public_display_label": "Embedding + Reranking",
+  "runner_profile": "bge_m3_rerank_baseline_v2",
+  "query_fraction": 1.0,
+  "query_body": {
+    "rerank": true,
+    "rag_fusion": false,
+    "route": "complex",
+    "explain": true,
+    "llm_rerank": false
+  },
+  "server_contract": {
+    "embedding_model": "BAAI/bge-m3",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "ingestion_llm_roles": "disabled",
+    "query_llm_stages": "disabled"
+  },
+  "source_definition": {
+    "measurement_runner_sha": "6defa0a50d696a7e4049413522fc0daca68f882e",
+    "runner_profiles_source_sha256": "2dd762cbd22a57388c25ed16fee1c44eed6edf724aef6a55583f1eb1b6203aaf"
+  },
+  "scope_boundary": "The label describes the measured embedding-and-reranker foundation; it is not vector-only."
+}

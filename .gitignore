@@ -1,0 +1,33 @@
+# Runtime data and local artifacts
+/data/
+/runs/
+/artifacts/
+/tmp/
+/logs/
+/.bench-work/
+/.private/
+/.codex/
+
+# Secrets and local configuration
+.env
+.env.*
+*.local.*
+*.secret.*
+*.key
+*.pem
+
+# Downloaded datasets and raw outputs
+*.zip
+*.jsonl
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
