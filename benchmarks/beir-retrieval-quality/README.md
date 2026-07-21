@@ -22,7 +22,7 @@ No dataset corpus, queries, qrels, or derived fixture is distributed here. The r
 - `bge_m3_rerank_baseline_v2`: BGE-M3 embedding with `bge-reranker-v2-m3`, without LLM-dependent ingestion or query stages.
 - `bge_m3_rf_pool_listwise`: Full Stack profile with the pinned LLM-dependent ingestion and query contract.
 
-A requested profile does not prove that every runtime feature was active. Published results therefore report scientific validity and strict feature completeness separately.
+A requested profile does not prove that every runtime feature was active. Published results therefore report scientific validity and strict feature completeness separately. The profile comparison also does not isolate the contribution of an individual feature.
 
 ## Self-test
 
@@ -51,7 +51,7 @@ The generated `sample_manifest.json` records the selected boundary. Capped valid
 
 ## Full-corpus result
 
-The curated six-cell bundle is at [results/published/beir-three-full-corpus-2026-07-v1](../../results/published/beir-three-full-corpus-2026-07-v1/README.md). Follow its own reproduction procedure, source locks, hardware boundaries, checksums, and strict-status limitations.
+The curated six-cell, maintainer-reported bundle is at [results/published/beir-three-full-corpus-2026-07-v1](../../results/published/beir-three-full-corpus-2026-07-v1/README.md). Inspect its scorecards, requested profiles, method, source locks, hardware boundaries, checksums, and strict-status limitations. The current bundle does not claim a completed independent public rerun or independent per-query recomputation.
 
 ## Local artifacts
 

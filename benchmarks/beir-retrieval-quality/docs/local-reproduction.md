@@ -1,6 +1,6 @@
 # Local Reproduction
 
-This document describes sanitized local reproduction steps for the BEIR retrieval quality benchmark.
+This document describes sanitized local rerun steps for the BEIR retrieval quality benchmark. Completing these commands in a separately controlled environment is required before describing a new result as independently reproduced.
 
 ## Prerequisites
 
@@ -42,6 +42,8 @@ python3 benchmarks/beir-retrieval-quality/runner/run_benchmark.py run \
 ```
 
 The runner stores the upstream archive and generated sample under `--work-dir`. The fixed seed and `sample_manifest.json` make the query and corpus boundary auditable. Treat capped output as quick validation only: its scores are not comparable to the full-corpus measurements and cannot support a published performance claim.
+
+The curated published bundle remains a maintainer-reported measurement. Its checksums and validators establish file identity and contract consistency; they do not substitute for rerunning every query or independently recomputing metrics from a retained per-query result set.
 
 ## Artifacts
 
