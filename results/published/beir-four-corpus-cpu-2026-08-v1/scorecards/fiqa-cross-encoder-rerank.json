@@ -38,7 +38,8 @@
     "min": 9011.0,
     "max": 22377.0,
     "count": 648,
-    "definition": "one end-to-end HTTP query per selected query, measured client-side; nearest-rank percentiles",
+    "definition": "one end-to-end HTTP query per selected query, measured client-side",
+    "percentile_algorithm": "index min(n-1, floor(p*n)) on the ascending sample, zero-based; equivalently the (floor(p*n)+1)-th smallest observation, capped at n. This differs from nearest rank (ceil(p*n)-th observation) exactly when p*n is an integer, where it is one observation higher. The published runner computes nearest rank, so a reproduction will differ by at most one observation on the affected percentiles named in this cell's limitations.",
     "comparison_scope": "within_dataset_same_hardware_only"
   },
   "validity": {
@@ -92,6 +93,31 @@
     "Measured at top_k=10 only. Retrieval depth is top_k x 5, so a deeper cutoff would have used a different candidate pool and would not have reproduced these values. Cutoffs beyond 10 are absent rather than estimated.",
     "Two independently ingested namespaces of the same corpus do not return identical results. Measured this round on NFCorpus with one binary: 0.2991 / 0.1495 against 0.3001 / 0.1524. Roughly 0.001-0.003 nDCG is therefore the floor for any comparison drawn across separate ingests, and differences below it must not be read as effects.",
     "An unexplained residual of 0.0011 nDCG on NFCorpus and 0.0027 on FiQA survives holding code, configuration, tool and vector graph fixed against an earlier measurement of the same revision. It is about one document in 323 queries. It is disclosed rather than rounded away.",
-    "Absolute values are below published dense-retrieval baselines on Quora, and FiQA carries a known loss from the score fusion constant in the measured build. Internal arm-to-arm comparison is valid; the absolute numbers need those boundaries stated before external use."
-  ]
+    "Absolute values are below published dense-retrieval baselines on Quora, and FiQA carries a known loss from the score fusion constant in the measured build. Internal arm-to-arm comparison is valid; the absolute numbers need those boundaries stated before external use.",
+    "Published p50 sit one observation above nearest rank, because p*n is an integer at n=648 and the measuring runner indexed floor(p*n). Per-query samples were not retained, so these values are documented rather than recomputed; the published runner computes nearest rank and will differ by that one observation."
+  ],
+  "models": {
+    "embedding": "bge-m3",
+    "reranker": "bge-reranker-v2-m3",
+    "format": "ONNX",
+    "precision": "fp32",
+    "content_sha256": {
+      "bge-m3/model.onnx": "6b9d185718f8f8d8420feecfb78c3c6fa2888fda3a1361bbfe1b4e858babb5c1",
+      "bge-m3/model.onnx_data": "79d982f5ee30bbbe3d48ca0ab4597144b69891f19523e34af2ee525fba0fbd06",
+      "bge-m3/tokenizer.json": "249df0778f236f6ece390de0de746838ef25b9d6954b68c2ee71249e0a9d8fd4",
+      "bge-reranker-v2-m3/model.onnx": "faae32b124a9d54afb7e89b5e9896e03c18a9552d56d1d6b273a709a83012486",
+      "bge-reranker-v2-m3/model.onnx_data": "f009aa6c6cf21986fd7e0021fa66b20ccce27abc6900a57c7109c8496811bcbe",
+      "bge-reranker-v2-m3/tokenizer.json": "8bf8afbfd11306bd872018c53bfdf2e160a56f8edbcf49933324404791c148d3"
+    }
+  },
+  "llm": null,
+  "arm_config": {
+    "rerank": true,
+    "llm_rerank": false,
+    "route": "complex",
+    "rag_fusion": false,
+    "llm_rerank_top_n": null,
+    "explain": true
+  },
+  "dataset_archive_sha256": "32c7df99ed21252fdfb2cf3f5673502a8d245ee0c44c4a133570d92ce2b3ad02"
 }

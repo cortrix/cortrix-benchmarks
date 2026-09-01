@@ -73,6 +73,96 @@ def test_the_shipped_bundle_declares_the_number_of_cells_it_ships() -> None:
 
 
 # --------------------------------------------------------------------------
+# schema validation, in depth
+#
+# An earlier validator compared top-level key sets only. Every case below passed
+# it. They are kept as a set because each exercises a different schema mechanism
+# -- const, enum, pattern, numeric bound, type, and required at depth -- and a
+# validator can lose any one of them independently.
+# --------------------------------------------------------------------------
+
+def test_an_invalid_schema_version_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "manifest.json", lambda d: d.__setitem__("schema_version", "9.9"))
+    assert _errors_mentioning(vmb.validate(bundle), "schema_version")
+
+
+def test_a_status_outside_its_enum_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "manifest.json", lambda d: d.__setitem__("status", "mostly-done"))
+    assert _errors_mentioning(vmb.validate(bundle), "status")
+
+
+def test_a_malformed_core_sha_is_rejected(tmp_path: Path) -> None:
+    # A commit id that is not a commit id makes the whole provenance chain
+    # unverifiable, which is the one thing a reader cannot work around.
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "manifest.json",
+             lambda d: d["measured_build"].__setitem__("cortrix_core_sha", "not-a-sha"))
+    assert _errors_mentioning(vmb.validate(bundle), "cortrix_core_sha")
+
+
+def test_a_metric_outside_zero_to_one_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "scorecards" / "scifact-dense-only.json",
+             lambda d: d["metrics"].__setitem__("ndcg_at_10", 7.0))
+    assert _errors_mentioning(vmb.validate(bundle), "ndcg_at_10")
+
+
+def test_a_negative_metric_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "scorecards" / "fiqa-dense-only.json",
+             lambda d: d["metrics"].__setitem__("recall_at_10", -0.1))
+    assert _errors_mentioning(vmb.validate(bundle), "recall_at_10")
+
+
+def test_a_missing_nested_required_field_is_rejected(tmp_path: Path) -> None:
+    # Depth is the point: hardware.cpu is required inside an object that is
+    # itself present, so a top-level key check never sees it go missing.
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "scorecards" / "scifact-dense-only.json",
+             lambda d: d["hardware"].pop("cpu"))
+    assert _errors_mentioning(vmb.validate(bundle), "cpu")
+
+
+def test_a_wrong_type_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "scorecards" / "nfcorpus-dense-only.json",
+             lambda d: d["counts"].__setitem__("corpus_docs", "three thousand"))
+    assert _errors_mentioning(vmb.validate(bundle), "corpus_docs")
+
+
+def test_a_malformed_query_subset_digest_is_rejected_by_pattern(tmp_path: Path) -> None:
+    # Distinct from the manifest-agreement check: this one catches a digest that
+    # is not a sha256 at all, even if the manifest carries the same wrong value.
+    bundle = _copy(tmp_path)
+
+    def mutate(d):
+        d["query_subset"]["sha256"] = "nope"
+
+    _rewrite(bundle / "scorecards" / "fiqa-dense-only.json", mutate)
+    assert _errors_mentioning(vmb.validate(bundle), "sha256")
+
+
+def test_an_unexpected_top_level_field_is_rejected(tmp_path: Path) -> None:
+    bundle = _copy(tmp_path)
+    _rewrite(bundle / "scorecards" / "quora-dense-only.json",
+             lambda d: d.__setitem__("editorial_note", "looks good to me"))
+    assert _errors_mentioning(vmb.validate(bundle), "editorial_note")
+
+
+def test_an_empty_scorecard_is_rejected_with_every_missing_field(tmp_path: Path) -> None:
+    # The blunt case: a scorecard reduced to nothing must not pass because the
+    # checks happened to look only at fields it still had.
+    bundle = _copy(tmp_path)
+    card = bundle / "scorecards" / "scifact-dense-only.json"
+    card.write_text("{}\n", encoding="utf-8")
+    _refresh_checksums(bundle)
+    errors = vmb.validate(bundle)
+    assert len(_errors_mentioning(errors, "is a required property")) >= 10
+
+
+# --------------------------------------------------------------------------
 # counting
 # --------------------------------------------------------------------------
 

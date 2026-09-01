@@ -25,108 +25,273 @@
     "protocol",
     "provenance",
     "comparability",
-    "limitations"
+    "limitations",
+    "models",
+    "llm",
+    "arm_config",
+    "dataset_archive_sha256"
   ],
   "properties": {
-    "schema_version": { "const": "1.0" },
-    "bundle_id": { "type": "string", "minLength": 1 },
-    "status": { "enum": ["complete", "partial"] },
-    "dataset": { "type": "string", "minLength": 1 },
-    "split": { "type": "string", "minLength": 1 },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "split": {
+      "type": "string",
+      "minLength": 1
+    },
     "arm": {
       "type": "string",
       "minLength": 1,
       "description": "The pipeline configuration measured, e.g. dense_only, cross_encoder_rerank, ingest_llm_rerank, llm_listwise. Not enumerated: a bundle may measure arms a previous one did not have."
     },
-    "public_display_label": { "type": "string", "minLength": 1 },
-    "runner_profile": { "type": "string", "minLength": 1 },
+    "public_display_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runner_profile": {
+      "type": "string",
+      "minLength": 1
+    },
     "namespaces": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["count", "shares_namespaces_with_sibling_arms", "note"],
+      "required": [
+        "count",
+        "shares_namespaces_with_sibling_arms",
+        "note"
+      ],
       "properties": {
-        "count": { "type": "integer", "minimum": 1 },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
         "shares_namespaces_with_sibling_arms": {
           "type": "boolean",
           "description": "True when the arms compared in this bundle query the same namespaces and therefore the same vector graphs. False means the comparison also carries the difference between independently built graphs, which has a floor -- see limitations."
         },
-        "note": { "type": "string" }
+        "note": {
+          "type": "string"
+        }
       }
     },
     "query_subset": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["judged_queries", "selected_queries", "selection_rule", "sha256"],
+      "required": [
+        "judged_queries",
+        "selected_queries",
+        "selection_rule",
+        "sha256"
+      ],
       "properties": {
-        "judged_queries": { "type": "integer", "minimum": 1 },
-        "selected_queries": { "type": "integer", "minimum": 1 },
-        "selection_rule": { "type": "string", "minLength": 1 },
-        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        "judged_queries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selected_queries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selection_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
       }
     },
     "counts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["corpus_docs", "judged_queries", "qrels_rows", "requested_queries", "evaluated_queries", "missing_query_text", "query_failures"],
+      "required": [
+        "corpus_docs",
+        "judged_queries",
+        "qrels_rows",
+        "requested_queries",
+        "evaluated_queries",
+        "missing_query_text",
+        "query_failures"
+      ],
       "properties": {
-        "corpus_docs": { "type": "integer", "minimum": 1 },
-        "judged_queries": { "type": "integer", "minimum": 1 },
-        "qrels_rows": { "type": "integer", "minimum": 1 },
-        "requested_queries": { "type": "integer", "minimum": 1 },
-        "evaluated_queries": { "type": "integer", "minimum": 0 },
-        "missing_query_text": { "type": "integer", "minimum": 0 },
-        "query_failures": { "type": "integer", "minimum": 0 }
+        "corpus_docs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "judged_queries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "qrels_rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "requested_queries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "evaluated_queries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_query_text": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "query_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "metrics": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["recall_at_10", "ndcg_at_10"],
+      "required": [
+        "recall_at_10",
+        "ndcg_at_10"
+      ],
       "description": "Cutoffs beyond 10 are optional. This bundle measured at top_k=10 only; a deeper cutoff would have required a different retrieval depth and would not have reproduced these values, so the deeper fields are absent rather than estimated.",
       "properties": {
-        "recall_at_10": { "type": "number", "minimum": 0, "maximum": 1 },
-        "ndcg_at_10": { "type": "number", "minimum": 0, "maximum": 1 },
-        "recall_at_50": { "type": "number", "minimum": 0, "maximum": 1 },
-        "ndcg_at_50": { "type": "number", "minimum": 0, "maximum": 1 }
+        "recall_at_10": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ndcg_at_10": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "recall_at_50": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ndcg_at_50": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
       }
     },
     "latency_ms": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mean", "p50", "p95", "min", "max", "count", "definition", "comparison_scope"],
+      "required": [
+        "mean",
+        "p50",
+        "p95",
+        "min",
+        "max",
+        "count",
+        "definition",
+        "comparison_scope",
+        "percentile_algorithm"
+      ],
       "properties": {
-        "mean": { "type": "number", "minimum": 0 },
-        "p50": { "type": "number", "minimum": 0 },
-        "p95": { "type": "number", "minimum": 0 },
-        "min": { "type": "number", "minimum": 0 },
-        "max": { "type": "number", "minimum": 0 },
-        "count": { "type": "integer", "minimum": 0 },
-        "definition": { "type": "string", "minLength": 1 },
-        "comparison_scope": { "type": "string", "minLength": 1 }
+        "mean": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p50": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p95": {
+          "type": "number",
+          "minimum": 0
+        },
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "comparison_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "percentile_algorithm": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "validity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["scientific", "feature_completeness"],
+      "required": [
+        "scientific",
+        "feature_completeness"
+      ],
       "description": "Scientific result status and feature completeness are recorded separately. A cell can be a sound measurement of a product that is missing a feature.",
       "properties": {
         "scientific": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["status", "reason"],
+          "required": [
+            "status",
+            "reason"
+          ],
           "properties": {
-            "status": { "enum": ["VALID", "QUALIFIED", "INVALID"] },
-            "reason": { "type": "string", "minLength": 1 }
+            "status": {
+              "enum": [
+                "VALID",
+                "QUALIFIED",
+                "INVALID"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         },
         "feature_completeness": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["status", "reason"],
+          "required": [
+            "status",
+            "reason"
+          ],
           "properties": {
-            "status": { "enum": ["PASS", "PARTIAL", "FAIL"] },
-            "reason": { "type": "string", "minLength": 1 }
+            "status": {
+              "enum": [
+                "PASS",
+                "PARTIAL",
+                "FAIL"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
       }
@@ -134,71 +299,337 @@
     "hardware": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["class", "cpu", "memory_gb", "accelerator", "embedding_execution_provider", "reranker_execution_provider"],
+      "required": [
+        "class",
+        "cpu",
+        "memory_gb",
+        "accelerator",
+        "embedding_execution_provider",
+        "reranker_execution_provider"
+      ],
       "description": "Hardware class only. No host names, addresses, user names or file system paths.",
       "properties": {
-        "class": { "type": "string", "minLength": 1 },
-        "cpu": { "type": "string", "minLength": 1 },
-        "memory_gb": { "type": "integer", "minimum": 1 },
-        "accelerator": { "type": "string" },
-        "embedding_execution_provider": { "type": "string", "minLength": 1 },
-        "reranker_execution_provider": { "type": "string", "minLength": 1 }
+        "class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cpu": {
+          "type": "string",
+          "minLength": 1
+        },
+        "memory_gb": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "accelerator": {
+          "type": "string"
+        },
+        "embedding_execution_provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reranker_execution_provider": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "source_locks": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cortrix_core_sha", "public_runner_sha", "measuring_runner_content_sha256", "source_equivalence"],
+      "required": [
+        "cortrix_core_sha",
+        "public_runner_sha",
+        "measuring_runner_content_sha256",
+        "source_equivalence"
+      ],
       "description": "public_runner_sha is the published runner a reader can obtain. measuring_runner_content_sha256 is the content hash of the file that actually produced this cell. When they differ, source_equivalence must say why and what was compared.",
       "properties": {
-        "cortrix_core_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-        "public_runner_sha": { "type": "string", "minLength": 1 },
-        "measuring_runner_content_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "runner_profiles_content_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "source_equivalence": { "type": "string", "minLength": 1 }
+        "cortrix_core_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "public_runner_sha": {
+          "type": "string",
+          "minLength": 1
+        },
+        "measuring_runner_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "runner_profiles_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_equivalence": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "protocol": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["top_k", "retrieval_depth", "metric_cutoffs", "query_mode", "request_timeout_seconds", "source_document_id_mapping", "task_drain"],
+      "required": [
+        "top_k",
+        "retrieval_depth",
+        "metric_cutoffs",
+        "query_mode",
+        "request_timeout_seconds",
+        "source_document_id_mapping",
+        "task_drain"
+      ],
       "properties": {
-        "top_k": { "type": "integer", "minimum": 1 },
-        "retrieval_depth": { "type": "integer", "minimum": 1 },
-        "metric_cutoffs": { "type": "array", "items": { "type": "integer" }, "minItems": 1 },
-        "query_mode": { "type": "string", "minLength": 1 },
-        "request_timeout_seconds": { "type": "number", "minimum": 1 },
-        "source_document_id_mapping": { "type": "string", "minLength": 1 },
-        "task_drain": { "type": "string", "minLength": 1 }
+        "top_k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retrieval_depth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "metric_cutoffs": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "query_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_timeout_seconds": {
+          "type": "number",
+          "minimum": 1
+        },
+        "source_document_id_mapping": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_drain": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "provenance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["measured_window", "scope_boundary", "reingested"],
+      "required": [
+        "measured_window",
+        "scope_boundary",
+        "reingested"
+      ],
       "properties": {
-        "measured_window": { "type": "string", "minLength": 1 },
-        "scope_boundary": { "type": "string", "minLength": 1 },
-        "reingested": { "type": "boolean" }
+        "measured_window": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reingested": {
+          "type": "boolean"
+        }
       }
     },
     "comparability": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["prior_bundle", "prior_cell", "directly_comparable", "reason"],
+      "required": [
+        "prior_bundle",
+        "prior_cell",
+        "directly_comparable",
+        "reason"
+      ],
       "description": "Whether this cell can be read against a cell in an earlier bundle. prior_cell is null when no earlier cell measured the same thing; that is a statement, not a gap to fill.",
       "properties": {
-        "prior_bundle": { "type": ["string", "null"] },
-        "prior_cell": { "type": ["string", "null"] },
-        "directly_comparable": { "type": "boolean" },
-        "reason": { "type": "string", "minLength": 1 }
+        "prior_bundle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prior_cell": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "directly_comparable": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "limitations": {
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string", "minLength": 1 },
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "description": "Disclosed limits on how far this cell can be read. Required, because a scorecard with no stated limits reads as one with none."
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "embedding",
+        "reranker",
+        "format",
+        "precision",
+        "content_sha256"
+      ],
+      "description": "Model identity by content hash. A model name alone does not identify weights.",
+      "properties": {
+        "embedding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reranker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "precision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_sha256": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "llm": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "ingest_time",
+        "query_time"
+      ],
+      "description": "LLM identity for this arm, or null when no LLM ran. Ingest-time and query-time are separate: a namespace enriched at ingest and queried without an LLM is not the same arm as the reverse.",
+      "properties": {
+        "ingest_time": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "role",
+            "provider_api",
+            "model",
+            "endpoint"
+          ],
+          "properties": {
+            "role": {
+              "type": "string"
+            },
+            "provider_api": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            }
+          }
+        },
+        "query_time": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "role",
+            "provider_api",
+            "model",
+            "endpoint",
+            "listwise_top_n"
+          ],
+          "properties": {
+            "role": {
+              "type": "string"
+            },
+            "provider_api": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "listwise_top_n": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "arm_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rerank",
+        "llm_rerank",
+        "route",
+        "rag_fusion"
+      ],
+      "description": "The retrieval knobs the runner profile sent, so the arm is reproducible from the record rather than from the profile name.",
+      "properties": {
+        "rerank": {
+          "type": "boolean"
+        },
+        "llm_rerank": {
+          "type": "boolean"
+        },
+        "route": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rag_fusion": {
+          "type": "boolean"
+        },
+        "llm_rerank_top_n": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "explain": {
+          "type": "boolean"
+        }
+      }
+    },
+    "dataset_archive_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of the public BEIR archive the corpus was taken from."
     }
   }
 }

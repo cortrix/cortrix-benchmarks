@@ -19,7 +19,8 @@
       "split": "test",
       "query_subset_sha256": "26cc483d5ed08c9559e5f99948281accbb9aac17b8c2ea6e1e857286d9ebd684",
       "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip",
-      "note": "Full corpus, every judged test query."
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165"
     },
     {
       "name": "nfcorpus",
@@ -30,7 +31,8 @@
       "split": "test",
       "query_subset_sha256": "f3950f7914eaf889ccceeaa0c7d53c787e674db1e442f8fa07ff8d2aec991d44",
       "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip",
-      "note": "Full corpus, every judged test query."
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "efe5be03f8c5b86a5870102d0599d227c8c6e2484328e68c6522560385671b0b"
     },
     {
       "name": "fiqa",
@@ -41,7 +43,8 @@
       "split": "test",
       "query_subset_sha256": "afde57664f4b3702f65a94218a2dbd831c5461b3aa3106e7ffd40820b22d8f6c",
       "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/fiqa.zip",
-      "note": "Full corpus, every judged test query."
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "32c7df99ed21252fdfb2cf3f5673502a8d245ee0c44c4a133570d92ce2b3ad02"
     },
     {
       "name": "quora",
@@ -52,7 +55,8 @@
       "split": "test",
       "query_subset_sha256": "826e3aa1ba6b464e43e12c6e11afcc2669e8327d20f832f8b33cbbf1a1740e0f",
       "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/quora.zip",
-      "note": "Full corpus of 522,931 documents. The reported rows use the first 2,000 judged queries of 10,000, NOT the full query set. Any comparison against a full-query-set Quora result is invalid."
+      "note": "Full corpus of 522,931 documents. The reported rows use the first 2,000 judged queries of 10,000, NOT the full query set. Any comparison against a full-query-set Quora result is invalid.",
+      "archive_sha256": "56aacd9dcc4d9c093b63f175afdda0e21cbc8442ecf6c717d09de7b358d77531"
     }
   ],
   "arms": [
@@ -129,8 +133,17 @@
       "embedding": "bge-m3",
       "reranker": "bge-reranker-v2-m3",
       "format": "ONNX",
-      "precision": "fp32"
+      "precision": "fp32",
+      "content_sha256": {
+        "bge-m3/model.onnx": "6b9d185718f8f8d8420feecfb78c3c6fa2888fda3a1361bbfe1b4e858babb5c1",
+        "bge-m3/model.onnx_data": "79d982f5ee30bbbe3d48ca0ab4597144b69891f19523e34af2ee525fba0fbd06",
+        "bge-m3/tokenizer.json": "249df0778f236f6ece390de0de746838ef25b9d6954b68c2ee71249e0a9d8fd4",
+        "bge-reranker-v2-m3/model.onnx": "faae32b124a9d54afb7e89b5e9896e03c18a9552d56d1d6b273a709a83012486",
+        "bge-reranker-v2-m3/model.onnx_data": "f009aa6c6cf21986fd7e0021fa66b20ccce27abc6900a57c7109c8496811bcbe",
+        "bge-reranker-v2-m3/tokenizer.json": "8bf8afbfd11306bd872018c53bfdf2e160a56f8edbcf49933324404791c148d3"
+      }
     },
+    "percentile_algorithm": "index min(n-1, floor(p*n)) on the ascending sample, zero-based; equivalently the (floor(p*n)+1)-th smallest observation, capped at n. This differs from nearest rank (ceil(p*n)-th observation) exactly when p*n is an integer, where it is one observation higher. The published runner computes nearest rank, so a reproduction will differ by at most one observation on the affected percentiles named in this cell's limitations.",
     "hardware": {
       "class": "bare-metal dual-socket server",
       "cpu": "2 x Intel Xeon Silver 4110 (32 cores total)",

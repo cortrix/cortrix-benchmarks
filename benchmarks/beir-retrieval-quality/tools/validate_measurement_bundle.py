@@ -7,6 +7,10 @@ checks a bundle against its declared shape rather than against a remembered one.
 
 What it enforces, and why each check exists:
 
+- Every document is validated against its JSON Schema in full: nested required
+  fields, enums, patterns and numeric bounds, not just top-level keys. A
+  validator that checks shallowly is worse than none, because it certifies.
+
 - Every file listed in checksums.sha256 exists and hashes to the recorded value,
   and every file in the bundle is listed. A bundle that ships an unlisted file is
   a bundle whose contents nobody has to account for.
@@ -36,6 +40,16 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+try:
+    from jsonschema import Draft202012Validator
+except ImportError:  # pragma: no cover - exercised by the dependency, not by tests
+    print(
+        "jsonschema is required for schema validation; install it with\n"
+        "  python -m pip install -r requirements-dev.txt",
+        file=sys.stderr,
+    )
+    raise
+
 SCHEMA_DIR = Path(__file__).resolve().parents[1] / "schemas"
 
 # Shapes that must never reach a public artifact.
@@ -57,18 +71,21 @@ def _load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _required(schema: Mapping[str, Any]) -> set[str]:
-    return set(schema.get("required", []))
+def _validate_against_schema(obj: Mapping[str, Any], schema: Mapping[str, Any],
+                             label: str, errors: list[str]) -> None:
+    """Full Draft 2020-12 validation, not a top-level field check.
 
-
-def _check_required_fields(obj: Mapping[str, Any], schema: Mapping[str, Any],
-                           label: str, errors: list[str]) -> None:
-    required = _required(schema)
-    missing = required - set(obj)
-    extra = set(obj) - set(schema.get("properties", {}))
-    _fail(errors, not missing, f"{label}: missing required fields {sorted(missing)}")
-    if schema.get("additionalProperties") is False:
-        _fail(errors, not extra, f"{label}: unexpected fields {sorted(extra)}")
+    An earlier version of this file compared top-level key sets only. That let a
+    bundle through with an out-of-range metric, a malformed commit sha, a status
+    outside its enum and a missing nested field -- every one of them the kind of
+    thing a reader would take on trust because a validator had passed it. Depth,
+    enums, patterns and numeric bounds all have to be enforced by the schema
+    itself, so the schema is the thing that runs.
+    """
+    validator = Draft202012Validator(schema)
+    for error in sorted(validator.iter_errors(obj), key=lambda e: list(e.absolute_path)):
+        pointer = "/".join(str(part) for part in error.absolute_path) or "<root>"
+        errors.append(f"{label}: {pointer}: {error.message}")
 
 
 def _check_checksums(bundle: Path, errors: list[str]) -> None:
@@ -122,7 +139,7 @@ def validate(bundle: Path) -> list[str]:
     if not manifest_path.exists():
         return ["manifest.json: missing"]
     manifest = _load(manifest_path)
-    _check_required_fields(manifest, bundle_schema, "manifest.json", errors)
+    _validate_against_schema(manifest, bundle_schema, "manifest.json", errors)
 
     datasets = {d["name"]: d for d in manifest.get("datasets", []) if isinstance(d, dict)}
     arms = {a["id"] for a in manifest.get("arms", []) if isinstance(a, dict)}
@@ -143,7 +160,7 @@ def validate(bundle: Path) -> list[str]:
     for name in on_disk:
         card = _load(card_dir / name)
         label = f"scorecards/{name}"
-        _check_required_fields(card, card_schema, label, errors)
+        _validate_against_schema(card, card_schema, label, errors)
 
         dataset = card.get("dataset")
         arm = card.get("arm")

@@ -49,6 +49,8 @@ The same reranker is a small gain on the three question-answering corpora above.
 
 **An unexplained residual of 0.0011 nDCG.** Holding code, configuration, tool and vector graph fixed against an earlier measurement of the same revision leaves 0.0011 on NFCorpus and 0.0027 on FiQA. About one document in 323 queries. Disclosed rather than rounded away.
 
+**The published p50 and p95 are one observation above nearest rank on some cells.** The measuring runner indexed `floor(p*n)`, which equals nearest rank unless `p*n` is an integer. At n=300 and n=2000 both percentiles are affected, at n=648 only p50, at n=323 neither. Per-query samples were not retained, so these are documented exactly rather than recomputed; each scorecard names which of its own percentiles are affected. The published runner computes nearest rank, so a reproduction differs by at most that one observation. Means, minima and maxima are unaffected, as are all retrieval metrics.
+
 **Absolute values.** Quora dense-only at 0.50 is below published dense-retrieval baselines for that corpus, and FiQA carries a known loss from the score fusion constant in this build. Arm-to-arm comparison within this bundle is valid; the absolute numbers need those boundaries stated first.
 
 **Comparability with July.** Only the cross-encoder arm on SciFact, NFCorpus and FiQA has a like-for-like cell in the July bundle — same corpus, same runner profile, same cutoff. Every other cell here has no predecessor, and each scorecard's `comparability` block says which case it is. The July round ran on GPU hardware with a query-complexity model that this round did not use, so even the comparable cells differ by build **and** hardware **and** configuration.
@@ -58,6 +60,10 @@ The same reranker is a small gain on the three question-answering corpora above.
 Answer quality of any system built on retrieval. Production throughput, latency or capacity under concurrent load. Security, privacy or compliance properties. Competitive ranking against other retrieval systems. Business outcomes of any kind.
 
 ## Provenance
+
+Models are pinned by content hash, not by name: `models.content_sha256` on every scorecard carries the sha256 of each ONNX graph, its external weight file and its tokenizer. Corpora are pinned by archive hash in `dataset_archive_sha256`. The SciFact archive hash matches the one recorded in the July bundle, so both rounds demonstrably read the same corpus.
+
+LLM identity is recorded per cell and split by stage, because ingest-time enrichment and query-time listwise reranking are different claims. The Quora listwise cells ran on vector-only namespaces: query-time LLM, no ingest-time one. The SciFact and NFCorpus listwise cells ran on enriched namespaces and therefore had both. `arm_config` carries the retrieval knobs each profile sent, so an arm is reproducible from the record rather than from a profile name.
 
 The runner that produced these cells was not a committed revision. Both measuring nodes ran an uncommitted working tree on top of a named commit, so the honest identity is a content hash, recorded per cell in `source_locks.measuring_runner_content_sha256`. The published runner is a rewrite for publication and is **not** presented as the revision that produced these numbers; `source_equivalence` states what was compared and what differs.
 

@@ -63,9 +63,22 @@ python3 $RUNNER ns1,ns2,ns3,ns4,ns5,ns6,ns7,ns8 --dataset quora \
 
 The arms with `ingest_llm_rerank` and `llm_listwise` require an LLM role configured on the server. Without one, the stage does not run and the arm is not the arm.
 
-## 5. Compare
+## 5. Check you have the same models and corpora
+
+`manifest.json` carries the sha256 of each corpus archive and of every model file. A model name does not identify weights, so if you are comparing against these numbers rather than just measuring your own system, hash yours:
+
+```bash
+sha256sum <corpus>.zip
+sha256sum models/bge-m3/model.onnx models/bge-m3/model.onnx_data models/bge-m3/tokenizer.json
+```
+
+## 6. Compare
 
 Each scorecard carries `comparability`, saying whether a cell in the July bundle measured the same thing. Where `directly_comparable` is false, there is no predecessor — that is a statement about coverage, not a missing value to be filled in with the nearest-looking number.
+
+## A note on the published percentiles
+
+The measuring runner computed percentiles as `ordered[floor(p*n)]`, which equals nearest rank unless `p*n` is an integer. Where it is, the published value is one observation higher. Each scorecard says whether its own p50 and p95 are affected. The runner in this repository computes nearest rank, so your percentiles may differ by that one observation. Means, minima, maxima and every retrieval metric are unaffected.
 
 ## Protocol details that change the result if you change them
 
