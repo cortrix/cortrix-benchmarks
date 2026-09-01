@@ -41,6 +41,10 @@ DATASETS: Dict[str, DatasetSpec] = {
         "hotpotqa",
         "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/hotpotqa.zip",
     ),
+    "quora": DatasetSpec(
+        "quora",
+        "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/quora.zip",
+    ),
     "fiqa-mini-120": DatasetSpec(
         "fiqa-mini-120",
         "",
