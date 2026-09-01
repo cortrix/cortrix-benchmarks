@@ -65,7 +65,17 @@ Models are pinned by content hash, not by name: `models.content_sha256` on every
 
 LLM identity is recorded per cell and split by stage, because ingest-time enrichment and query-time listwise reranking are different claims. The Quora listwise cells ran on vector-only namespaces: query-time LLM, no ingest-time one. The SciFact and NFCorpus listwise cells ran on enriched namespaces and therefore had both. `arm_config` carries the retrieval knobs each profile sent, so an arm is reproducible from the record rather than from a profile name.
 
-The runner that produced these cells was not a committed revision. Both measuring nodes ran an uncommitted working tree on top of a named commit, so the honest identity is a content hash, recorded per cell in `source_locks.measuring_runner_content_sha256`. The published runner is a rewrite for publication and is **not** presented as the revision that produced these numbers; `source_equivalence` states what was compared and what differs.
+The runner that produced these cells was not a committed revision. Both measuring nodes ran an uncommitted working tree on top of a named commit, so the honest identity is a content hash, recorded per cell in `source_locks.measuring_runner_content_sha256`. The published runner is a rewrite for publication and is **not** presented as the revision that produced these numbers.
+
+The published runner is pinned by commit **and** by content hash, so `source_equivalence` can be checked rather than taken on trust:
+
+```bash
+git show <public_runner_sha>:benchmarks/beir-retrieval-quality/runner/query_only_eval.py | sha256sum
+```
+
+Two differences between the published and measuring runners are known, and both are stated rather than smoothed over. The published runner counts failed requests, which the measuring runners did not — every cell here recorded zero failures and zero missing query text, so the two behave identically over this data. And the published runner computes nearest-rank percentiles while the measuring runners indexed `floor(p*n)`, which is the one-observation difference described above.
+
+The published profiles file has a different content hash from either measuring file. The five profiles used here were compared field by field and every retrieval parameter is identical; the differences are comment wording and one diagnostic profile, unused here, that is absent from the published file.
 
 ## Files
 

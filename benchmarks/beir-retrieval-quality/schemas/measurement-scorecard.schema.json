@@ -341,7 +341,9 @@
         "cortrix_core_sha",
         "public_runner_sha",
         "measuring_runner_content_sha256",
-        "source_equivalence"
+        "source_equivalence",
+        "public_runner_content_sha256",
+        "public_profiles_content_sha256"
       ],
       "description": "public_runner_sha is the published runner a reader can obtain. measuring_runner_content_sha256 is the content hash of the file that actually produced this cell. When they differ, source_equivalence must say why and what was compared.",
       "properties": {
@@ -351,7 +353,8 @@
         },
         "public_runner_sha": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Commit on main from which the published runner can be obtained."
         },
         "measuring_runner_content_sha256": {
           "type": "string",
@@ -364,6 +367,15 @@
         "source_equivalence": {
           "type": "string",
           "minLength": 1
+        },
+        "public_runner_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Content hash of the published runner file, so the equivalence claim is checkable byte-for-byte rather than asserted."
+        },
+        "public_profiles_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       }
     },

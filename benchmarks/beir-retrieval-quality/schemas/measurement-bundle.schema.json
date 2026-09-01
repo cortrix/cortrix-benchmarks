@@ -189,7 +189,9 @@
         "cortrix_core_sha",
         "public_runner_sha",
         "measuring_runner_content_sha256",
-        "source_equivalence"
+        "source_equivalence",
+        "public_runner_content_sha256",
+        "public_profiles_content_sha256"
       ],
       "properties": {
         "cortrix_core_sha": {
@@ -198,7 +200,7 @@
         },
         "public_runner_sha": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^[0-9a-f]{40}$"
         },
         "measuring_runner_content_sha256": {
           "type": "object",
@@ -212,6 +214,14 @@
         "source_equivalence": {
           "type": "string",
           "minLength": 1
+        },
+        "public_runner_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "public_profiles_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       }
     },
