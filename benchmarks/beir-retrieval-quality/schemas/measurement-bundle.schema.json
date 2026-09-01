@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cortrix.ai/schemas/benchmarks/measurement-bundle-1.0.json",
+  "title": "Measurement bundle manifest",
+  "description": "A dated, immutable record of one measurement round. Separate from release-candidate-bundle.schema.json, which describes a release candidate: fixed arms, fixed datasets, fixed metric depths. A measurement round has whatever shape it had.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "status",
+    "public_label",
+    "created_at",
+    "scope",
+    "measured_build",
+    "datasets",
+    "arms",
+    "cells",
+    "source_locks",
+    "protocol",
+    "artifacts",
+    "limitations",
+    "not_evidence_of"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "public_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "measured_build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cortrix_core_sha",
+        "description"
+      ],
+      "properties": {
+        "cortrix_core_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "corpus_docs",
+          "judged_queries",
+          "selected_queries",
+          "qrels_rows",
+          "split",
+          "query_subset_sha256",
+          "archive_url",
+          "note",
+          "archive_sha256"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "corpus_docs": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "judged_queries": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "selected_queries": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "qrels_rows": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "split": {
+            "type": "string",
+            "minLength": 1
+          },
+          "query_subset_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "archive_url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string"
+          },
+          "archive_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "arms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "public_display_label",
+          "runner_profile",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "public_display_label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runner_profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "cells": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declared_count",
+        "scorecards"
+      ],
+      "description": "declared_count is authoritative. A verifier must reject a bundle whose scorecard files do not match it exactly, so a miscounted round cannot be published as a complete one.",
+      "properties": {
+        "declared_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scorecards": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "source_locks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cortrix_core_sha",
+        "public_runner_sha",
+        "measuring_runner_content_sha256",
+        "source_equivalence",
+        "public_runner_content_sha256",
+        "public_profiles_content_sha256"
+      ],
+      "properties": {
+        "cortrix_core_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "public_runner_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "measuring_runner_content_sha256": {
+          "type": "object",
+          "description": "Content hash of the runner file that produced each group of cells. Several entries when the round did not use one runner throughout.",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "source_equivalence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "public_runner_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "public_profiles_content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "top_k",
+        "retrieval_depth",
+        "metric_cutoffs",
+        "query_mode",
+        "request_timeout_seconds",
+        "models",
+        "hardware",
+        "percentile_algorithm"
+      ],
+      "properties": {
+        "top_k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retrieval_depth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "metric_cutoffs": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "query_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_timeout_seconds": {
+          "type": "number",
+          "minimum": 1
+        },
+        "models": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "embedding",
+            "reranker",
+            "format",
+            "precision",
+            "content_sha256"
+          ],
+          "properties": {
+            "embedding": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reranker": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "precision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "content_sha256": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "hardware": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "class",
+            "cpu",
+            "memory_gb",
+            "accelerator"
+          ],
+          "properties": {
+            "class": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cpu": {
+              "type": "string",
+              "minLength": 1
+            },
+            "memory_gb": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "accelerator": {
+              "type": "string"
+            }
+          }
+        },
+        "percentile_algorithm": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minProperties": 1
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Bundle-level limits. Required. A measurement round with no disclosed limits has not been examined hard enough."
+    },
+    "not_evidence_of": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "What these numbers do not establish. Stated explicitly so a reader does not have to infer the boundary."
+    }
+  }
+}

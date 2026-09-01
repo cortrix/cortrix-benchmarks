@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "bundle_id": "beir-four-corpus-cpu-2026-08",
+  "status": "complete",
+  "public_label": "Four-corpus CPU retrieval measurements",
+  "created_at": "2026-09-01",
+  "scope": "retrieval_quality_only",
+  "measured_build": {
+    "cortrix_core_sha": "79a4eb17c62521338d1ac47a9749e6230e87e69b",
+    "description": "Cortrix core at the revision carrying the merged async task-queue fixes. Measured after merge, on namespaces ingested in an earlier round, so the binary is the only variable against that round."
+  },
+  "datasets": [
+    {
+      "name": "scifact",
+      "corpus_docs": 5183,
+      "judged_queries": 300,
+      "selected_queries": 300,
+      "qrels_rows": 339,
+      "split": "test",
+      "query_subset_sha256": "26cc483d5ed08c9559e5f99948281accbb9aac17b8c2ea6e1e857286d9ebd684",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip",
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165"
+    },
+    {
+      "name": "nfcorpus",
+      "corpus_docs": 3633,
+      "judged_queries": 323,
+      "selected_queries": 323,
+      "qrels_rows": 12334,
+      "split": "test",
+      "query_subset_sha256": "f3950f7914eaf889ccceeaa0c7d53c787e674db1e442f8fa07ff8d2aec991d44",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip",
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "efe5be03f8c5b86a5870102d0599d227c8c6e2484328e68c6522560385671b0b"
+    },
+    {
+      "name": "fiqa",
+      "corpus_docs": 57638,
+      "judged_queries": 648,
+      "selected_queries": 648,
+      "qrels_rows": 1706,
+      "split": "test",
+      "query_subset_sha256": "afde57664f4b3702f65a94218a2dbd831c5461b3aa3106e7ffd40820b22d8f6c",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/fiqa.zip",
+      "note": "Full corpus, every judged test query.",
+      "archive_sha256": "32c7df99ed21252fdfb2cf3f5673502a8d245ee0c44c4a133570d92ce2b3ad02"
+    },
+    {
+      "name": "quora",
+      "corpus_docs": 522931,
+      "judged_queries": 10000,
+      "selected_queries": 2000,
+      "qrels_rows": 15675,
+      "split": "test",
+      "query_subset_sha256": "826e3aa1ba6b464e43e12c6e11afcc2669e8327d20f832f8b33cbbf1a1740e0f",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/quora.zip",
+      "note": "Full corpus of 522,931 documents. The reported rows use the first 2,000 judged queries of 10,000, NOT the full query set. Any comparison against a full-query-set Quora result is invalid.",
+      "archive_sha256": "56aacd9dcc4d9c093b63f175afdda0e21cbc8442ecf6c717d09de7b358d77531"
+    }
+  ],
+  "arms": [
+    {
+      "id": "dense_only",
+      "public_display_label": "Dense + BM25, no reranking",
+      "runner_profile": "vector_full",
+      "description": "Dense retrieval fused with BM25. No cross-encoder, no LLM stage."
+    },
+    {
+      "id": "cross_encoder_rerank",
+      "public_display_label": "Embedding + Reranking",
+      "runner_profile": "bge_m3_rerank_baseline_v2",
+      "description": "Dense retrieval followed by a bge-reranker-v2-m3 cross-encoder."
+    },
+    {
+      "id": "cross_encoder_rerank_full",
+      "public_display_label": "Embedding + Reranking (full profile)",
+      "runner_profile": "bge_m3_rerank_full",
+      "description": "Same cross-encoder stage under the full-profile request shape."
+    },
+    {
+      "id": "ingest_llm_rerank",
+      "public_display_label": "Ingest-time LLM enrichment + Reranking",
+      "runner_profile": "bge_m3_rerank_ingest_llm",
+      "description": "Namespace enriched by an LLM at ingest, queried with the cross-encoder."
+    },
+    {
+      "id": "llm_listwise",
+      "public_display_label": "Full Stack",
+      "runner_profile": "bge_m3_llm_listwise",
+      "description": "Cross-encoder followed by an LLM listwise reranking stage."
+    }
+  ],
+  "cells": {
+    "declared_count": 16,
+    "scorecards": [
+      "fiqa-cross-encoder-rerank-full.json",
+      "fiqa-cross-encoder-rerank.json",
+      "fiqa-dense-only.json",
+      "nfcorpus-cross-encoder-rerank-full.json",
+      "nfcorpus-cross-encoder-rerank.json",
+      "nfcorpus-dense-only.json",
+      "nfcorpus-ingest-llm-rerank.json",
+      "nfcorpus-llm-listwise.json",
+      "quora-cross-encoder-rerank-full.json",
+      "quora-dense-only.json",
+      "quora-llm-listwise.json",
+      "scifact-cross-encoder-rerank-full.json",
+      "scifact-cross-encoder-rerank.json",
+      "scifact-dense-only.json",
+      "scifact-ingest-llm-rerank.json",
+      "scifact-llm-listwise.json"
+    ]
+  },
+  "source_locks": {
+    "cortrix_core_sha": "79a4eb17c62521338d1ac47a9749e6230e87e69b",
+    "public_runner_sha": "9490520c24a96ed97b80073ed3ebab096b80550b",
+    "public_runner_content_sha256": "8dd3844ff43ed454bea8b24bf74b317b2fe7654ca289588c6b7447bad638eeb8",
+    "public_profiles_content_sha256": "e86f6fab488a70183b1b8540cee548fdcf3033b640d9a57e7e26c336ef79c012",
+    "measuring_runner_content_sha256": {
+      "node_a_no_llm_arms": "6824533deedebb14ba5bdfd2978b1adf3249c711135bc7a51aab7fdbe2386a62",
+      "node_b_llm_arms": "6cdf90047078d8b2d512648d74861fb09d107d9598792d64f90d232b32e01b27"
+    },
+    "source_equivalence": "The published runner is a rewrite for publication and is NOT the revision that produced these cells. Neither measuring node ran a committed revision: both ran uncommitted working trees, so the measuring identity is a content hash. The published runner reproduces the same request shape (namespaces always sent as a list), the same deterministic query subset, the same document collapse and the same metrics. Two differences are known; their effects are bounded and disclosed below. First, the published runner counts failed requests, which the measuring runners did not; every cell here recorded zero failures and zero missing query text, so the two behave identically over this data. Second, the published runner computes nearest-rank percentiles while the measuring runners indexed floor(p*n); this changes only p50 and p95, by at most one observation, on the cells each scorecard names in its limitations. The published profiles file has a different content hash from either measuring file, but the five profiles used here -- vector_full, bge_m3_rerank_baseline_v2, bge_m3_rerank_full, bge_m3_rerank_ingest_llm and bge_m3_llm_listwise -- were compared field by field and every retrieval parameter is identical; the differences are comment wording and one diagnostic profile, unused here, that is absent from the published file."
+  },
+  "protocol": {
+    "top_k": 10,
+    "retrieval_depth": 50,
+    "metric_cutoffs": [
+      10
+    ],
+    "query_mode": "serial, one query at a time",
+    "request_timeout_seconds": 300,
+    "models": {
+      "embedding": "bge-m3",
+      "reranker": "bge-reranker-v2-m3",
+      "format": "ONNX",
+      "precision": "fp32",
+      "content_sha256": {
+        "bge-m3/model.onnx": "6b9d185718f8f8d8420feecfb78c3c6fa2888fda3a1361bbfe1b4e858babb5c1",
+        "bge-m3/model.onnx_data": "79d982f5ee30bbbe3d48ca0ab4597144b69891f19523e34af2ee525fba0fbd06",
+        "bge-m3/tokenizer.json": "249df0778f236f6ece390de0de746838ef25b9d6954b68c2ee71249e0a9d8fd4",
+        "bge-reranker-v2-m3/model.onnx": "faae32b124a9d54afb7e89b5e9896e03c18a9552d56d1d6b273a709a83012486",
+        "bge-reranker-v2-m3/model.onnx_data": "f009aa6c6cf21986fd7e0021fa66b20ccce27abc6900a57c7109c8496811bcbe",
+        "bge-reranker-v2-m3/tokenizer.json": "8bf8afbfd11306bd872018c53bfdf2e160a56f8edbcf49933324404791c148d3"
+      }
+    },
+    "percentile_algorithm": "index min(n-1, floor(p*n)) on the ascending sample, zero-based; equivalently the (floor(p*n)+1)-th smallest observation, capped at n. This differs from nearest rank (ceil(p*n)-th observation) exactly when p*n is an integer, where it is one observation higher. The published runner computes nearest rank, so a reproduction will differ by at most one observation on the affected percentiles named in this cell's limitations.",
+    "hardware": {
+      "class": "bare-metal dual-socket server",
+      "cpu": "2 x Intel Xeon Silver 4110 (32 cores total)",
+      "memory_gb": 187,
+      "accelerator": "none"
+    }
+  },
+  "artifacts": {
+    "readme": "README.md",
+    "summaries": "summaries.json",
+    "reproduction": "reproduction.md",
+    "checksums": "checksums.sha256",
+    "scorecards": "scorecards/"
+  },
+  "limitations": [
+    "Measured at top_k=10 only. Retrieval depth is top_k x 5, so a deeper cutoff would have used a different candidate pool and would not have reproduced these values. Cutoffs beyond 10 are absent rather than estimated.",
+    "Two independently ingested namespaces of the same corpus do not return identical results. Measured this round on NFCorpus with one binary: 0.2991 / 0.1495 against 0.3001 / 0.1524. Roughly 0.001-0.003 nDCG is therefore the floor for any comparison drawn across separate ingests, and differences below it must not be read as effects.",
+    "An unexplained residual of 0.0011 nDCG on NFCorpus and 0.0027 on FiQA survives holding code, configuration, tool and vector graph fixed against an earlier measurement of the same revision. It is about one document in 323 queries. It is disclosed rather than rounded away.",
+    "2,000 of 10,000 judged queries. Not a full-query-set result and not comparable to one.",
+    "Absolute values are below published dense-retrieval baselines on Quora, and FiQA carries a known loss from the score fusion constant in the measured build. Internal arm-to-arm comparison is valid; the absolute numbers need those boundaries stated before external use.",
+    "Only the cross-encoder arm on SciFact, NFCorpus and FiQA has a like-for-like cell in the July release-candidate bundle. Every other cell here has no predecessor, and the comparability block on each scorecard says so rather than leaving the reader to guess.",
+    "The July bundle ran on GPU hardware with a query-complexity model that this round did not use. Differences against it are build-plus-hardware-plus-configuration, never build alone."
+  ],
+  "not_evidence_of": [
+    "answer quality of any system built on top of retrieval",
+    "production throughput, latency or capacity under concurrent load",
+    "security, privacy or compliance properties",
+    "competitive ranking against other retrieval systems",
+    "business outcomes of any kind"
+  ]
+}
