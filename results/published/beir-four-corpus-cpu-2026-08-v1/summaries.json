@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "bundle_id": "beir-four-corpus-cpu-2026-08",
+  "status": "complete",
+  "public_label": "Four-corpus CPU retrieval measurements",
+  "cells": 16,
+  "dataset_summaries": [
+    {
+      "dataset": "scifact",
+      "corpus_docs": 5183,
+      "selected_queries": 300,
+      "query_subset_sha256": "26cc483d5ed08c9559e5f99948281accbb9aac17b8c2ea6e1e857286d9ebd684",
+      "arms": {
+        "cross_encoder_rerank_full": {
+          "public_display_label": "Embedding + Reranking (full profile)",
+          "runner_profile": "bge_m3_rerank_full",
+          "recall_at_10": 0.8044,
+          "ndcg_at_10": 0.6206,
+          "latency_ms_mean": 15932.0,
+          "evaluated_queries": 300,
+          "namespaces": 1
+        },
+        "cross_encoder_rerank": {
+          "public_display_label": "Embedding + Reranking",
+          "runner_profile": "bge_m3_rerank_baseline_v2",
+          "recall_at_10": 0.8111,
+          "ndcg_at_10": 0.6184,
+          "latency_ms_mean": 13383.0,
+          "evaluated_queries": 300,
+          "namespaces": 1
+        },
+        "dense_only": {
+          "public_display_label": "Dense + BM25, no reranking",
+          "runner_profile": "vector_full",
+          "recall_at_10": 0.7728,
+          "ndcg_at_10": 0.5942,
+          "latency_ms_mean": 1556.0,
+          "evaluated_queries": 300,
+          "namespaces": 1
+        },
+        "ingest_llm_rerank": {
+          "public_display_label": "Ingest-time LLM enrichment + Reranking",
+          "runner_profile": "bge_m3_rerank_ingest_llm",
+          "recall_at_10": 0.8214,
+          "ndcg_at_10": 0.6449,
+          "latency_ms_mean": 12291.0,
+          "evaluated_queries": 300,
+          "namespaces": 1
+        },
+        "llm_listwise": {
+          "public_display_label": "Full Stack",
+          "runner_profile": "bge_m3_llm_listwise",
+          "recall_at_10": 0.8752,
+          "ndcg_at_10": 0.7784,
+          "latency_ms_mean": 16646.0,
+          "evaluated_queries": 300,
+          "namespaces": 1
+        }
+      }
+    },
+    {
+      "dataset": "nfcorpus",
+      "corpus_docs": 3633,
+      "selected_queries": 323,
+      "query_subset_sha256": "f3950f7914eaf889ccceeaa0c7d53c787e674db1e442f8fa07ff8d2aec991d44",
+      "arms": {
+        "cross_encoder_rerank_full": {
+          "public_display_label": "Embedding + Reranking (full profile)",
+          "runner_profile": "bge_m3_rerank_full",
+          "recall_at_10": 0.1539,
+          "ndcg_at_10": 0.3091,
+          "latency_ms_mean": 10915.0,
+          "evaluated_queries": 323,
+          "namespaces": 1
+        },
+        "cross_encoder_rerank": {
+          "public_display_label": "Embedding + Reranking",
+          "runner_profile": "bge_m3_rerank_baseline_v2",
+          "recall_at_10": 0.1569,
+          "ndcg_at_10": 0.3121,
+          "latency_ms_mean": 9082.0,
+          "evaluated_queries": 323,
+          "namespaces": 1
+        },
+        "dense_only": {
+          "public_display_label": "Dense + BM25, no reranking",
+          "runner_profile": "vector_full",
+          "recall_at_10": 0.1495,
+          "ndcg_at_10": 0.2991,
+          "latency_ms_mean": 656.0,
+          "evaluated_queries": 323,
+          "namespaces": 1
+        },
+        "ingest_llm_rerank": {
+          "public_display_label": "Ingest-time LLM enrichment + Reranking",
+          "runner_profile": "bge_m3_rerank_ingest_llm",
+          "recall_at_10": 0.1589,
+          "ndcg_at_10": 0.3124,
+          "latency_ms_mean": 10485.0,
+          "evaluated_queries": 323,
+          "namespaces": 1
+        },
+        "llm_listwise": {
+          "public_display_label": "Full Stack",
+          "runner_profile": "bge_m3_llm_listwise",
+          "recall_at_10": 0.1768,
+          "ndcg_at_10": 0.3772,
+          "latency_ms_mean": 13380.0,
+          "evaluated_queries": 323,
+          "namespaces": 1
+        }
+      }
+    },
+    {
+      "dataset": "fiqa",
+      "corpus_docs": 57638,
+      "selected_queries": 648,
+      "query_subset_sha256": "afde57664f4b3702f65a94218a2dbd831c5461b3aa3106e7ffd40820b22d8f6c",
+      "arms": {
+        "cross_encoder_rerank_full": {
+          "public_display_label": "Embedding + Reranking (full profile)",
+          "runner_profile": "bge_m3_rerank_full",
+          "recall_at_10": 0.4554,
+          "ndcg_at_10": 0.3156,
+          "latency_ms_mean": 15449.0,
+          "evaluated_queries": 648,
+          "namespaces": 1
+        },
+        "cross_encoder_rerank": {
+          "public_display_label": "Embedding + Reranking",
+          "runner_profile": "bge_m3_rerank_baseline_v2",
+          "recall_at_10": 0.4523,
+          "ndcg_at_10": 0.3125,
+          "latency_ms_mean": 14308.0,
+          "evaluated_queries": 648,
+          "namespaces": 1
+        },
+        "dense_only": {
+          "public_display_label": "Dense + BM25, no reranking",
+          "runner_profile": "vector_full",
+          "recall_at_10": 0.3703,
+          "ndcg_at_10": 0.254,
+          "latency_ms_mean": 1602.0,
+          "evaluated_queries": 648,
+          "namespaces": 1
+        }
+      }
+    },
+    {
+      "dataset": "quora",
+      "corpus_docs": 522931,
+      "selected_queries": 2000,
+      "query_subset_sha256": "826e3aa1ba6b464e43e12c6e11afcc2669e8327d20f832f8b33cbbf1a1740e0f",
+      "arms": {
+        "cross_encoder_rerank_full": {
+          "public_display_label": "Embedding + Reranking (full profile)",
+          "runner_profile": "bge_m3_rerank_full",
+          "recall_at_10": 0.3078,
+          "ndcg_at_10": 0.2031,
+          "latency_ms_mean": 19020.0,
+          "evaluated_queries": 2000,
+          "namespaces": 8
+        },
+        "dense_only": {
+          "public_display_label": "Dense + BM25, no reranking",
+          "runner_profile": "vector_full",
+          "recall_at_10": 0.7142,
+          "ndcg_at_10": 0.5003,
+          "latency_ms_mean": 1723.0,
+          "evaluated_queries": 2000,
+          "namespaces": 8
+        },
+        "llm_listwise": {
+          "public_display_label": "Full Stack",
+          "runner_profile": "bge_m3_llm_listwise",
+          "recall_at_10": 0.3092,
+          "ndcg_at_10": 0.3039,
+          "latency_ms_mean": 21628.0,
+          "evaluated_queries": 2000,
+          "namespaces": 8
+        }
+      }
+    }
+  ]
+}

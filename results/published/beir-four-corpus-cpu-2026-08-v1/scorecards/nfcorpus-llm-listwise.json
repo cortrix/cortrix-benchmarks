@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "bundle_id": "beir-four-corpus-cpu-2026-08",
+  "status": "complete",
+  "dataset": "nfcorpus",
+  "split": "test",
+  "arm": "llm_listwise",
+  "public_display_label": "Full Stack",
+  "runner_profile": "bge_m3_llm_listwise",
+  "namespaces": {
+    "count": 1,
+    "shares_namespaces_with_sibling_arms": true,
+    "note": "All arms on this dataset queried this same namespace and therefore the same graph."
+  },
+  "query_subset": {
+    "judged_queries": 323,
+    "selected_queries": 323,
+    "selection_rule": "judged qrels ids for the split, sorted lexicographically, truncated",
+    "sha256": "f3950f7914eaf889ccceeaa0c7d53c787e674db1e442f8fa07ff8d2aec991d44"
+  },
+  "counts": {
+    "corpus_docs": 3633,
+    "judged_queries": 323,
+    "qrels_rows": 12334,
+    "requested_queries": 323,
+    "evaluated_queries": 323,
+    "missing_query_text": 0,
+    "query_failures": 0
+  },
+  "metrics": {
+    "recall_at_10": 0.1768,
+    "ndcg_at_10": 0.3772
+  },
+  "latency_ms": {
+    "mean": 13380.0,
+    "p50": 13169.0,
+    "p95": 17391.0,
+    "min": 429.0,
+    "max": 19353.0,
+    "count": 323,
+    "definition": "one end-to-end HTTP query per selected query, measured client-side; nearest-rank percentiles",
+    "comparison_scope": "within_dataset_same_hardware_only"
+  },
+  "validity": {
+    "scientific": {
+      "status": "VALID",
+      "reason": "Every selected query was evaluated with no missing query text and no request failures."
+    },
+    "feature_completeness": {
+      "status": "PASS",
+      "reason": "The arm ran the stages its profile declares; no declared stage was disabled or degraded during the measured pass."
+    }
+  },
+  "hardware": {
+    "class": "bare-metal dual-socket server",
+    "cpu": "2 x Intel Xeon Silver 4110 (32 cores total)",
+    "memory_gb": 187,
+    "accelerator": "none",
+    "embedding_execution_provider": "cpu",
+    "reranker_execution_provider": "cpu"
+  },
+  "source_locks": {
+    "cortrix_core_sha": "79a4eb17c62521338d1ac47a9749e6230e87e69b",
+    "public_runner_sha": "PENDING_MERGE_OF_PUBLIC_RUNNER_PR",
+    "measuring_runner_content_sha256": "6cdf90047078d8b2d512648d74861fb09d107d9598792d64f90d232b32e01b27",
+    "runner_profiles_content_sha256": "2dd762cbd22a57388c25ed16fee1c44eed6edf724aef6a55583f1eb1b6203aaf",
+    "source_equivalence": "The published runner is a rewrite for publication and is NOT the revision that produced these cells. Both measuring runners existed as uncommitted working trees; their content hashes are recorded above. The published runner reproduces the same request shape (namespaces always sent as a list), the same deterministic query subset, the same document collapse and the same metrics. It additionally counts failed requests, which the measuring runners did not; every cell here recorded zero failures and zero missing query text, so the two behave identically over this data."
+  },
+  "protocol": {
+    "top_k": 10,
+    "retrieval_depth": 50,
+    "metric_cutoffs": [
+      10
+    ],
+    "query_mode": "serial, one query at a time",
+    "request_timeout_seconds": 300,
+    "source_document_id_mapping": "BEIR corpus id from document metadata, de-duplicated by document id at best rank",
+    "task_drain": "namespaces ingested in an earlier round; no ingestion during the measured pass"
+  },
+  "provenance": {
+    "measured_window": "2026-08-28/2026-08-31",
+    "scope_boundary": "retrieval_quality_only",
+    "reingested": false
+  },
+  "comparability": {
+    "prior_bundle": null,
+    "prior_cell": null,
+    "directly_comparable": false,
+    "reason": "No cell in the prior bundle measured this dataset and arm combination."
+  },
+  "limitations": [
+    "Measured at top_k=10 only. Retrieval depth is top_k x 5, so a deeper cutoff would have used a different candidate pool and would not have reproduced these values. Cutoffs beyond 10 are absent rather than estimated.",
+    "All arms on this dataset queried the same namespaces, so the arm-to-arm comparison carries no independent-ingest difference.",
+    "An unexplained residual of 0.0011 nDCG on NFCorpus and 0.0027 on FiQA survives holding code, configuration, tool and vector graph fixed against an earlier measurement of the same revision. It is about one document in 323 queries. It is disclosed rather than rounded away.",
+    "Absolute values are below published dense-retrieval baselines on Quora, and FiQA carries a known loss from the score fusion constant in the measured build. Internal arm-to-arm comparison is valid; the absolute numbers need those boundaries stated before external use."
+  ]
+}

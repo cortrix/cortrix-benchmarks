@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "bundle_id": "beir-four-corpus-cpu-2026-08",
+  "status": "complete",
+  "public_label": "Four-corpus CPU retrieval measurements",
+  "created_at": "2026-09-01",
+  "scope": "retrieval_quality_only",
+  "measured_build": {
+    "cortrix_core_sha": "79a4eb17c62521338d1ac47a9749e6230e87e69b",
+    "description": "Cortrix core at the revision carrying the merged async task-queue fixes. Measured after merge, on namespaces ingested in an earlier round, so the binary is the only variable against that round."
+  },
+  "datasets": [
+    {
+      "name": "scifact",
+      "corpus_docs": 5183,
+      "judged_queries": 300,
+      "selected_queries": 300,
+      "qrels_rows": 339,
+      "split": "test",
+      "query_subset_sha256": "26cc483d5ed08c9559e5f99948281accbb9aac17b8c2ea6e1e857286d9ebd684",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip",
+      "note": "Full corpus, every judged test query."
+    },
+    {
+      "name": "nfcorpus",
+      "corpus_docs": 3633,
+      "judged_queries": 323,
+      "selected_queries": 323,
+      "qrels_rows": 12334,
+      "split": "test",
+      "query_subset_sha256": "f3950f7914eaf889ccceeaa0c7d53c787e674db1e442f8fa07ff8d2aec991d44",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip",
+      "note": "Full corpus, every judged test query."
+    },
+    {
+      "name": "fiqa",
+      "corpus_docs": 57638,
+      "judged_queries": 648,
+      "selected_queries": 648,
+      "qrels_rows": 1706,
+      "split": "test",
+      "query_subset_sha256": "afde57664f4b3702f65a94218a2dbd831c5461b3aa3106e7ffd40820b22d8f6c",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/fiqa.zip",
+      "note": "Full corpus, every judged test query."
+    },
+    {
+      "name": "quora",
+      "corpus_docs": 522931,
+      "judged_queries": 10000,
+      "selected_queries": 2000,
+      "qrels_rows": 15675,
+      "split": "test",
+      "query_subset_sha256": "826e3aa1ba6b464e43e12c6e11afcc2669e8327d20f832f8b33cbbf1a1740e0f",
+      "archive_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/quora.zip",
+      "note": "Full corpus of 522,931 documents. The reported rows use the first 2,000 judged queries of 10,000, NOT the full query set. Any comparison against a full-query-set Quora result is invalid."
+    }
+  ],
+  "arms": [
+    {
+      "id": "dense_only",
+      "public_display_label": "Dense + BM25, no reranking",
+      "runner_profile": "vector_full",
+      "description": "Dense retrieval fused with BM25. No cross-encoder, no LLM stage."
+    },
+    {
+      "id": "cross_encoder_rerank",
+      "public_display_label": "Embedding + Reranking",
+      "runner_profile": "bge_m3_rerank_baseline_v2",
+      "description": "Dense retrieval followed by a bge-reranker-v2-m3 cross-encoder."
+    },
+    {
+      "id": "cross_encoder_rerank_full",
+      "public_display_label": "Embedding + Reranking (full profile)",
+      "runner_profile": "bge_m3_rerank_full",
+      "description": "Same cross-encoder stage under the full-profile request shape."
+    },
+    {
+      "id": "ingest_llm_rerank",
+      "public_display_label": "Ingest-time LLM enrichment + Reranking",
+      "runner_profile": "bge_m3_rerank_ingest_llm",
+      "description": "Namespace enriched by an LLM at ingest, queried with the cross-encoder."
+    },
+    {
+      "id": "llm_listwise",
+      "public_display_label": "Full Stack",
+      "runner_profile": "bge_m3_llm_listwise",
+      "description": "Cross-encoder followed by an LLM listwise reranking stage."
+    }
+  ],
+  "cells": {
+    "declared_count": 16,
+    "scorecards": [
+      "fiqa-cross-encoder-rerank-full.json",
+      "fiqa-cross-encoder-rerank.json",
+      "fiqa-dense-only.json",
+      "nfcorpus-cross-encoder-rerank-full.json",
+      "nfcorpus-cross-encoder-rerank.json",
+      "nfcorpus-dense-only.json",
+      "nfcorpus-ingest-llm-rerank.json",
+      "nfcorpus-llm-listwise.json",
+      "quora-cross-encoder-rerank-full.json",
+      "quora-dense-only.json",
+      "quora-llm-listwise.json",
+      "scifact-cross-encoder-rerank-full.json",
+      "scifact-cross-encoder-rerank.json",
+      "scifact-dense-only.json",
+      "scifact-ingest-llm-rerank.json",
+      "scifact-llm-listwise.json"
+    ]
+  },
+  "source_locks": {
+    "cortrix_core_sha": "79a4eb17c62521338d1ac47a9749e6230e87e69b",
+    "public_runner_sha": "PENDING_MERGE_OF_PUBLIC_RUNNER_PR",
+    "measuring_runner_content_sha256": {
+      "node_a_no_llm_arms": "6824533deedebb14ba5bdfd2978b1adf3249c711135bc7a51aab7fdbe2386a62",
+      "node_b_llm_arms": "6cdf90047078d8b2d512648d74861fb09d107d9598792d64f90d232b32e01b27"
+    },
+    "source_equivalence": "The published runner is a rewrite for publication and is NOT the revision that produced these cells. Both measuring runners existed as uncommitted working trees; their content hashes are recorded above. The published runner reproduces the same request shape (namespaces always sent as a list), the same deterministic query subset, the same document collapse and the same metrics. It additionally counts failed requests, which the measuring runners did not; every cell here recorded zero failures and zero missing query text, so the two behave identically over this data."
+  },
+  "protocol": {
+    "top_k": 10,
+    "retrieval_depth": 50,
+    "metric_cutoffs": [
+      10
+    ],
+    "query_mode": "serial, one query at a time",
+    "request_timeout_seconds": 300,
+    "models": {
+      "embedding": "bge-m3",
+      "reranker": "bge-reranker-v2-m3",
+      "format": "ONNX",
+      "precision": "fp32"
+    },
+    "hardware": {
+      "class": "bare-metal dual-socket server",
+      "cpu": "2 x Intel Xeon Silver 4110 (32 cores total)",
+      "memory_gb": 187,
+      "accelerator": "none"
+    }
+  },
+  "artifacts": {
+    "readme": "README.md",
+    "summaries": "summaries.json",
+    "reproduction": "reproduction.md",
+    "checksums": "checksums.sha256",
+    "scorecards": "scorecards/"
+  },
+  "limitations": [
+    "Measured at top_k=10 only. Retrieval depth is top_k x 5, so a deeper cutoff would have used a different candidate pool and would not have reproduced these values. Cutoffs beyond 10 are absent rather than estimated.",
+    "Two independently ingested namespaces of the same corpus do not return identical results. Measured this round on NFCorpus with one binary: 0.2991 / 0.1495 against 0.3001 / 0.1524. Roughly 0.001-0.003 nDCG is therefore the floor for any comparison drawn across separate ingests, and differences below it must not be read as effects.",
+    "An unexplained residual of 0.0011 nDCG on NFCorpus and 0.0027 on FiQA survives holding code, configuration, tool and vector graph fixed against an earlier measurement of the same revision. It is about one document in 323 queries. It is disclosed rather than rounded away.",
+    "2,000 of 10,000 judged queries. Not a full-query-set result and not comparable to one.",
+    "Absolute values are below published dense-retrieval baselines on Quora, and FiQA carries a known loss from the score fusion constant in the measured build. Internal arm-to-arm comparison is valid; the absolute numbers need those boundaries stated before external use.",
+    "Only the cross-encoder arm on SciFact, NFCorpus and FiQA has a like-for-like cell in the July release-candidate bundle. Every other cell here has no predecessor, and the comparability block on each scorecard says so rather than leaving the reader to guess.",
+    "The July bundle ran on GPU hardware with a query-complexity model that this round did not use. Differences against it are build-plus-hardware-plus-configuration, never build alone."
+  ],
+  "not_evidence_of": [
+    "answer quality of any system built on top of retrieval",
+    "production throughput, latency or capacity under concurrent load",
+    "security, privacy or compliance properties",
+    "competitive ranking against other retrieval systems",
+    "business outcomes of any kind"
+  ]
+}

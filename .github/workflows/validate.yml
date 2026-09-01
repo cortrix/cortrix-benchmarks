@@ -44,3 +44,12 @@ jobs:
       - name: Verify the checksum inventory
         working-directory: results/published/beir-three-full-corpus-2026-07-v1
         run: sha256sum -c checksums.sha256
+
+      - name: Validate the measurement bundle
+        run: >-
+          python benchmarks/beir-retrieval-quality/tools/validate_measurement_bundle.py
+          results/published/beir-four-corpus-cpu-2026-08-v1
+
+      - name: Verify the measurement bundle checksum inventory
+        working-directory: results/published/beir-four-corpus-cpu-2026-08-v1
+        run: sha256sum -c checksums.sha256
