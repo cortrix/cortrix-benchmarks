@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import math
 import statistics
 import sys
 from pathlib import Path
@@ -111,28 +112,50 @@ def query_subset_digest(qids: Sequence[str]) -> str:
     return hashlib.sha256(joined).hexdigest()
 
 
+def nearest_rank(ordered: Sequence[float], p: float) -> float:
+    """The p-th percentile by nearest rank: the ceil(p*n)-th smallest observation.
+
+    Nearest rank returns an observation that is actually in the sample, so there
+    is no interpolation convention for a reader to agree with. It is stated as a
+    named function because the obvious spelling, `ordered[int(p * n)]`, is wrong
+    whenever p*n is an integer -- it returns the next observation up. At n=2000
+    that puts p95 on observation 1901 rather than 1900, and p50 on 1001 rather
+    than 1000. The two spellings agree everywhere else, which is what makes the
+    error survive casual reading.
+    """
+    if not ordered:
+        raise ValueError("nearest_rank requires a non-empty sample")
+    rank = max(1, math.ceil(p * len(ordered)))
+    return ordered[min(rank, len(ordered)) - 1]
+
+
 def summarise_latency(latencies_ms: Sequence[float]) -> Dict[str, float]:
     """mean/p50/p95/min/max/n over per-query wall time.
 
-    Percentiles use nearest-rank on the sorted sample, which is exact for the
-    sample and needs no interpolation choice to be agreed with a reader.
+    Percentiles are nearest rank; see nearest_rank above for why that is spelled
+    out rather than inlined.
     """
     if not latencies_ms:
         return {}
     ordered = sorted(latencies_ms)
-    p50 = ordered[len(ordered) // 2]
-    p95 = ordered[min(len(ordered) - 1, int(len(ordered) * 0.95))]
     return {
         "mean": statistics.mean(ordered),
-        "p50": p50,
-        "p95": p95,
+        "p50": nearest_rank(ordered, 0.50),
+        "p95": nearest_rank(ordered, 0.95),
         "min": ordered[0],
         "max": ordered[-1],
         "n": float(len(ordered)),
     }
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def build_parser() -> argparse.ArgumentParser:
+    """The command-line surface, as a value main() and the tests both use.
+
+    Exposed rather than built inline so a test exercises the parser this script
+    actually runs. A test that rebuilds an equivalent parser passes while the
+    production defaults or wiring drift away from it, which is the failure mode
+    it was supposed to catch.
+    """
     ap = argparse.ArgumentParser(
         description=(
             "Score an already-ingested Cortrix namespace against a BEIR dataset. "
@@ -179,6 +202,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
     )
     ap.add_argument("--work-dir", default="/tmp/cortrix-benchmarks/beir")
+    return ap
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    ap = build_parser()
     args = ap.parse_args(argv)
 
     namespaces = parse_namespaces(args.namespace)

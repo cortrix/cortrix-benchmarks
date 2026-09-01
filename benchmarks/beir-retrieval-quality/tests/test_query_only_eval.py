@@ -182,6 +182,69 @@ def test_latency_p95_stays_inside_the_sample() -> None:
     assert stats["p95"] == 2.0
 
 
+# --- nearest rank, at the boundaries where the obvious spelling is wrong ------
+#
+# `ordered[int(p * n)]` and nearest rank agree unless p*n is an integer, where
+# the former returns the next observation up. Every sample size below is one
+# where they disagree, which is why they are the sizes worth pinning: at n=300,
+# 648 and 2000 -- the real measured cell sizes -- p50 or p95 or both land on an
+# integer rank.
+
+def test_nearest_rank_is_the_ceil_rank_observation() -> None:
+    import math
+
+    ordered = [float(i) for i in range(1, 1001)]
+    for p in (0.0001, 0.25, 0.5, 0.9, 0.95, 0.99, 1.0):
+        expected = ordered[math.ceil(p * len(ordered)) - 1]
+        assert qoe.nearest_rank(ordered, p) == expected
+
+
+def test_p95_on_a_two_thousand_sample_is_observation_1900_not_1901() -> None:
+    # The size of the Quora cells. 0.95 * 2000 = 1900 exactly, so the naive
+    # index returns 1901 and every published p95 at this size would be one
+    # observation too high.
+    ordered = [float(i) for i in range(1, 2001)]
+    assert qoe.nearest_rank(ordered, 0.95) == 1900.0
+
+
+def test_p50_on_an_even_sample_is_the_lower_middle_observation() -> None:
+    ordered = [float(i) for i in range(1, 2001)]
+    assert qoe.nearest_rank(ordered, 0.50) == 1000.0
+
+
+def test_p50_and_p95_on_a_three_hundred_sample() -> None:
+    # The size of the SciFact cells: both percentiles land on integer ranks.
+    ordered = [float(i) for i in range(1, 301)]
+    assert qoe.nearest_rank(ordered, 0.50) == 150.0
+    assert qoe.nearest_rank(ordered, 0.95) == 285.0
+
+
+def test_p50_on_an_odd_sample_is_the_true_middle() -> None:
+    ordered = [float(i) for i in range(1, 6)]
+    assert qoe.nearest_rank(ordered, 0.50) == 3.0
+
+
+def test_nearest_rank_clamps_to_the_ends() -> None:
+    ordered = [10.0, 20.0, 30.0]
+    assert qoe.nearest_rank(ordered, 0.0) == 10.0
+    assert qoe.nearest_rank(ordered, 1.0) == 30.0
+
+
+def test_nearest_rank_refuses_an_empty_sample() -> None:
+    # Returning 0.0 would read as a measured latency of zero.
+    import pytest
+
+    with pytest.raises(ValueError):
+        qoe.nearest_rank([], 0.5)
+
+
+def test_summarised_percentiles_use_nearest_rank_at_a_real_cell_size() -> None:
+    # The end-to-end check: the published statistic, not just the helper.
+    stats = qoe.summarise_latency([float(i) for i in range(1, 649)])
+    assert stats["p50"] == 324.0
+    assert stats["p95"] == 616.0
+
+
 def test_latency_summary_of_nothing_is_empty_rather_than_zero() -> None:
     # Reporting mean=0 for a run that measured nothing would read as a real
     # measurement of zero latency.
@@ -193,26 +256,40 @@ def test_latency_summary_of_nothing_is_empty_rather_than_zero() -> None:
 # --------------------------------------------------------------------------
 
 def _parse(argv: list[str]):
-    import argparse
+    """Parse with the parser the script actually uses.
+
+    Deliberately not a rebuilt equivalent: a copied parser keeps passing while
+    the production defaults or wiring drift away from it, which is exactly the
+    drift these tests exist to catch.
+    """
     import contextlib
     import io
 
-    # Rebuild the parser the same way main() does, by calling main() with a
-    # namespace argument that stops before any network use is attempted.
-    # Simpler and more direct: assert on the documented defaults through a
-    # parser constructed identically.
-    ap = argparse.ArgumentParser()
-    ap.add_argument("namespace")
-    ap.add_argument("--dataset", default="scifact", choices=sorted(beir_loader.DATASETS))
-    ap.add_argument("--split", default="test")
-    ap.add_argument("--max-queries", type=int, default=50)
-    ap.add_argument("--base-url", default="http://127.0.0.1:8420")
-    ap.add_argument("--top-k", type=int, default=10)
-    ap.add_argument("--profile", default="vector_full", choices=sorted(PROFILES))
-    ap.add_argument("--timeout-seconds", type=float, default=qoe.DEFAULT_TIMEOUT_SECONDS)
-    ap.add_argument("--work-dir", default="/tmp/cortrix-benchmarks/beir")
     with contextlib.redirect_stderr(io.StringIO()):
-        return ap.parse_args(argv)
+        return qoe.build_parser().parse_args(argv)
+
+
+def test_the_tests_exercise_the_production_parser() -> None:
+    # Pins the seam itself. If build_parser stops being what main() calls, the
+    # argument tests below stop meaning anything, and nothing else would say so.
+    import inspect
+
+    source = inspect.getsource(qoe.main)
+    assert "build_parser()" in source
+
+
+def test_the_parser_exposes_exactly_the_documented_options() -> None:
+    # An option added to production without a test here would otherwise go
+    # unnoticed; an option removed would break callers silently.
+    options = {
+        action.dest
+        for action in qoe.build_parser()._actions
+        if action.dest != "help"
+    }
+    assert options == {
+        "namespace", "dataset", "split", "max_queries", "base_url",
+        "top_k", "profile", "timeout_seconds", "work_dir",
+    }
 
 
 def test_timeout_default_is_the_long_arm_value() -> None:
