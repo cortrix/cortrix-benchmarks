@@ -45,17 +45,22 @@ DATASETS: Dict[str, DatasetSpec] = {
         "quora",
         "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/quora.zip",
     ),
-    "fiqa-mini-120": DatasetSpec(
-        "fiqa-mini-120",
-        "",
-        local_path="../datasets/fiqa-mini/contract_micro",
-    ),
-    "fiqa-mini-600": DatasetSpec(
-        "fiqa-mini-600",
-        "",
-        local_path="../datasets/fiqa-mini/representative_mini_v0",
-    ),
 }
+# The registry lists datasets this repository ships or can download. Two
+# local-fixture entries, fiqa-mini-120 and fiqa-mini-600, were removed: their
+# fixture directories are not part of this repository, so selecting them raised
+# FileNotFoundError, and once --dataset became a constrained choice they were
+# advertised in --help as though they were available. A local-fixture extension
+# mechanism can be designed separately; keeping unobtainable names here would
+# make the advertised surface depend on whichever private checkout is in use.
+#
+# DatasetSpec.local_path and ensure_dataset's local branch are deliberately
+# retained for that future mechanism.
+#
+# _strip_known_dataset_prefix in run_benchmark and cortrix_client still lists the
+# removed names. That is not an oversight: it recovers a document id from a
+# prefixed filename, so dropping the names there would silently break doc-id
+# extraction for any namespace already ingested from those fixtures.
 
 
 def download_dataset(spec: DatasetSpec, cache_dir: Path, log: LogFn = print) -> Path:
