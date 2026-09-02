@@ -278,6 +278,14 @@ def test_the_tests_exercise_the_production_parser() -> None:
     assert "build_parser()" in source
 
 
+def _dataset_choices() -> set[str]:
+    """The dataset names the production parser offers, read off the parser itself."""
+    for action in qoe.build_parser()._actions:
+        if action.dest == "dataset":
+            return set(action.choices or ())
+    raise AssertionError("the parser has no --dataset option")
+
+
 def test_the_parser_exposes_exactly_the_documented_options() -> None:
     # An option added to production without a test here would otherwise go
     # unnoticed; an option removed would break callers silently.
@@ -315,6 +323,57 @@ def test_existing_single_namespace_invocation_still_parses_unchanged() -> None:
 
 def test_split_defaults_to_test() -> None:
     assert _parse(["ns"]).split == "test"
+
+
+def test_the_parser_does_not_advertise_datasets_this_repository_lacks() -> None:
+    # fiqa-mini-120 and fiqa-mini-600 were local-fixture entries whose directories
+    # are not in this repository. Selecting one raised FileNotFoundError, and once
+    # --dataset became a constrained choice they appeared in --help as available.
+    # The advertised surface must not depend on what a private checkout happens to
+    # have on disk.
+    choices = _dataset_choices()
+    assert "fiqa-mini-120" not in choices
+    assert "fiqa-mini-600" not in choices
+    assert "fiqa-mini-120" not in beir_loader.DATASETS
+    assert "fiqa-mini-600" not in beir_loader.DATASETS
+
+
+def test_the_removed_names_are_rejected_by_the_parser() -> None:
+    # The counterpart to the test above: absent from --help is not the same as
+    # refused on the command line.
+    import argparse
+    import contextlib
+    import io
+
+    for name in ("fiqa-mini-120", "fiqa-mini-600"):
+        with contextlib.redirect_stderr(io.StringIO()):
+            try:
+                qoe.build_parser().parse_args(["ns", "--dataset", name])
+            except SystemExit as exc:
+                assert exc.code == 2
+            else:  # pragma: no cover - only reached if the guard regresses
+                raise AssertionError(f"{name} was accepted")
+
+
+def test_every_public_dataset_remains_selectable() -> None:
+    # Removing the unavailable entries must not narrow the datasets that do ship
+    # or can be downloaded.
+    expected = {"scifact", "nfcorpus", "fiqa", "webis-touche2020", "hotpotqa", "quora"}
+    assert set(beir_loader.DATASETS) == expected
+    for name in sorted(expected):
+        assert _parse(["ns", "--dataset", name]).dataset == name
+
+
+def test_every_registry_entry_is_obtainable() -> None:
+    # The rule the removal enforces, stated once so a future entry cannot
+    # reintroduce the same defect: a dataset either downloads from a URL or ships
+    # a fixture directory that exists.
+    for name, spec in beir_loader.DATASETS.items():
+        if spec.local_path:
+            resolved = beir_loader._resolve_local_path(spec.local_path)
+            assert resolved.exists(), f"{name}: local fixture {resolved} is absent"
+        else:
+            assert spec.url, f"{name}: neither a download URL nor a local fixture"
 
 
 def test_quora_is_selectable_as_a_dataset() -> None:
