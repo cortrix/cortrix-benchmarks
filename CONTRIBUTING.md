@@ -43,7 +43,7 @@ Cortrix Benchmarks Maintainers will acknowledge a sufficiently identified challe
 
 ## License
 
-The repository uses a path-based `AGPL-3.0-only` and `CC-BY-4.0` mapping. Contributions use the license applicable to the changed material, are certified under [DCO 1.1](DCO), and do not require a CLA. See [LICENSES/README.md](LICENSES/README.md) and [COPYRIGHT.md](COPYRIGHT.md).
+The current development line uses a path-based `Apache-2.0` and `CC-BY-4.0` mapping. Contributions use the license applicable to the changed material, are certified under [DCO 1.1](DCO), and do not require a CLA. Historical code revisions remain under their original `AGPL-3.0-only` terms. See [LICENSES/README.md](LICENSES/README.md) and [COPYRIGHT.md](COPYRIGHT.md).
 
 ## Before opening a pull request
 

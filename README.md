@@ -69,8 +69,8 @@ Downloaded datasets, raw runs, logs, model files, and runtime databases are not 
 
 ## License
 
-- Code under `benchmarks/beir-retrieval-quality/runner/`, `tests/`, and `tools/` is licensed under `AGPL-3.0-only`.
+- Code under `benchmarks/beir-retrieval-quality/runner/`, `tests/`, and `tools/` is licensed under `Apache-2.0`.
 - Documentation, schemas, curated results, and provenance are licensed under `CC-BY-4.0`.
 - Third-party datasets are not included. Their original terms continue to apply.
 
-See [LICENSES/README.md](LICENSES/README.md) for the path mapping and license texts, and [COPYRIGHT.md](COPYRIGHT.md) for copyright information.
+Historical code revisions before this license mapping changed remain available under `AGPL-3.0-only`; history is not rewritten or dual-licensed. See [LICENSES/README.md](LICENSES/README.md) for the current path mapping, current and historical license texts, and [COPYRIGHT.md](COPYRIGHT.md) for copyright information.
